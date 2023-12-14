@@ -1,0 +1,20 @@
+{
+    "id": "lxx-indexed-list",
+    "name": "基于uni-indexed-list封装修改的通讯录列表样式",
+    "version": "v1.0",
+    "description": "基于uni-indexed-list封装修改的通讯录列表样式",
+    "keywords": [
+        "indexed-list",
+        "索引列表",
+        "通讯录",
+        "电话簿",
+        "联系人列表"
+    ],
+    "dcloudext": {
+        "category": [
+            "前端组件",
+            "通用组件"
+        ]
+    },
+    "displayName": "基于uni-indexed-list封装修改的通讯录列表样式"
+}

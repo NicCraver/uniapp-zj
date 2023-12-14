@@ -19,10 +19,13 @@ declare global {
   const getCurrentScope: typeof import('vue')['getCurrentScope']
   const h: typeof import('vue')['h']
   const inject: typeof import('vue')['inject']
+  const isApp: typeof import('./hooks/useSystemInfo')['isApp']
+  const isH5: typeof import('./hooks/useSystemInfo')['isH5']
   const isProxy: typeof import('vue')['isProxy']
   const isReactive: typeof import('vue')['isReactive']
   const isReadonly: typeof import('vue')['isReadonly']
   const isRef: typeof import('vue')['isRef']
+  const isWx: typeof import('./hooks/useSystemInfo')['isWx']
   const mapActions: typeof import('pinia')['mapActions']
   const mapGetters: typeof import('pinia')['mapGetters']
   const mapState: typeof import('pinia')['mapState']
@@ -87,8 +90,11 @@ declare global {
   const useAttrs: typeof import('vue')['useAttrs']
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
+  const useInit: typeof import('./hooks/useInit')['useInit']
+  const useRoutingListening: typeof import('./hooks/useRoutingListening')['useRoutingListening']
   const useSlots: typeof import('vue')['useSlots']
   const useStore: typeof import('@/helper/pinia-auto-refs')['useStore']
+  const useTitle: typeof import('./hooks/useTitle')['useTitle']
   const watch: typeof import('vue')['watch']
   const watchEffect: typeof import('vue')['watchEffect']
   const watchPostEffect: typeof import('vue')['watchPostEffect']
@@ -98,4 +104,5 @@ declare global {
 declare global {
   // @ts-ignore
   export type { Component, ComponentPublicInstance, ComputedRef, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, VNode, WritableComputedRef } from 'vue'
+  import('vue')
 }

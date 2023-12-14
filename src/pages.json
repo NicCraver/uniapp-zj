@@ -27,12 +27,65 @@
           }
         }
       ]
+    },
+    {
+      // login
+      "root": "pages/login",
+      "pages": [
+        {
+          "name": "login",
+          "path": "login",
+          "style": {
+            "navigationBarTitleText": "登录"
+          }
+        }
+      ]
+    },
+    {
+      // loginOrSignup
+      "root": "pages/loginOrSignup",
+      "pages": [
+        {
+          "name": "loginOrSignup",
+          "path": "loginOrSignup",
+          "style": {
+            "navigationBarTitleText": "登录/注册"
+          }
+        }
+      ]
+    },
+    {
+      // signup
+      "root": "pages/signup",
+      "pages": [
+        {
+          "name": "signup",
+          "path": "signup",
+          "style": {
+            "navigationBarTitleText": "注册"
+          }
+        }
+      ]
+    },
+    // protocol
+    {
+      "root": "pages/protocol",
+      "pages": [
+        {
+          "name": "protocol",
+          "path": "protocol",
+          "style": {
+            "navigationBarTitleText": "服务协议"
+          }
+        }
+      ]
     }
   ],
   "globalStyle": {
+    "navigationStyle":"custom",
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "uni-app",
-    "navigationBarBackgroundColor": "#1AA86C",
+    "navigationBarBackgroundColor": "#FFF",
     "backgroundColor": "#F8F8F8"
   },
   "tabBar": {
@@ -50,5 +103,12 @@
         "text": "个人"
       }
     ]
+  },
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^nut-(.*)?-(.*)": "nutui-uniapp/components/$1$2/$1$2.vue",
+      "^nut-(.*)": "nutui-uniapp/components/$1/$1.vue"
+    }
   }
 }

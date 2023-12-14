@@ -9,8 +9,14 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    Black: typeof import('./components/Black.vue')['default']
+    GlobalNavbar: typeof import('./components/GlobalNavbar.vue')['default']
+    ImgNavbar: typeof import('./components/ImgNavbar.vue')['default']
+    LxxIndexedList: typeof import('./components/lxx-indexed-list/lxx-indexed-list.vue')['default']
+    LxxIndexedListItem: typeof import('./components/lxx-indexed-list/lxx-indexed-list-item.vue')['default']
     PullList: typeof import('./components/pullList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TabBar: typeof import('./components/TabBar.vue')['default']
   }
 }
