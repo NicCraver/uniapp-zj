@@ -7,6 +7,10 @@ onLoad(() => {
 });
 </script>
 
-<template>profile</template>
+<template>
+  <GlobalNavbar>
+    <nut-navbar title="我的"> </nut-navbar>
+  </GlobalNavbar>
+</template>
 
 <style lang="scss" scoped></style>
