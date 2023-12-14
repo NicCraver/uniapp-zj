@@ -5,12 +5,12 @@ export default {
     // 字体颜色
     color: {
       type: String,
-      default: '#666'
+      default: '#999'
     },
     // 字体选中颜色
     selectedColor: {
       type: String,
-      default: '#5677FC'
+      default: '#14A83B'
     },
     // 背景颜色
     backgroundColor: {
@@ -48,9 +48,18 @@ export default {
       tabBar: [
         {
           pagePath: '/pages/index/index',
-          text: 'code',
-          iconPath: '/static/images/tabbar/code_gray.png',
-          selectedIconPath: '/static/images/tabbar/code_active.png',
+          text: '门锁',
+          iconPath: '/static/images/icon_mensuoweixuanzhong@2x.png',
+          selectedIconPath: '/static/images/icon_mensuoxuanzhong@2x.png',
+          num: 0,
+          isDot: false,
+          verify: true
+        },
+        {
+          pagePath: '/pages/index/index',
+          text: '管理',
+          iconPath: '/static/images/icon_guanliweixuanzhong@2x.png',
+          selectedIconPath: '/static/images/icon_guanlixuanzhong@2x.png',
           num: 0,
           isDot: false,
           verify: true
@@ -58,16 +67,25 @@ export default {
         {
           pagePath: '/pages/extend/extend',
           text: 'extend',
-          iconPath: '/static/images/tabbar/release.png',
+          iconPath: '/static/images/icon_xuanchengkaisuo@2x.png',
           hump: true,
           verify: true,
-          selectedIconPath: '/static/images/tabbar/release.png'
+          selectedIconPath: '/static/images/icon_xuanchengkaisuo@2x.png'
         },
         {
           pagePath: '/pages/my/my',
-          text: 'thor',
-          iconPath: '/static/images/tabbar/thor_gray.png',
-          selectedIconPath: '/static/images/tabbar/thor_active.png',
+          text: '设置',
+          iconPath: '/static/images/icon_shezhiweixuanzhong@2x.png',
+          selectedIconPath: '/static/images/icon_shezhixuanzhong@2x.png',
+          num: 0,
+          isDot: true,
+          verify: true
+        },
+        {
+          pagePath: '/pages/profile/profile',
+          text: '我的',
+          iconPath: '/static/images/icon_wodeweixuanzhong@2x.png',
+          selectedIconPath: '/static/images/icon_wodexuanzhong@2x.png',
           num: 0,
           isDot: true,
           verify: true
@@ -91,6 +109,7 @@ export default {
       }
     },
     tabbarSwitch(index, hump, pagePath, verify) {
+      console.log(`pagePath`, pagePath);
       if (verify) {
         this.changeTabBar({
           index
@@ -137,11 +156,13 @@ export default {
           >
         </view>
         <view
+          v-if="index !== 2"
           class="tui-text-scale"
           :class="{ 'tui-text-hump': item.hump }"
           :style="{ color: current === index ? selectedColor : color }"
-          >{{ item.text }}</view
         >
+          {{ item.text }}
+        </view>
       </view>
     </block>
     <view v-if="hump && !unlined" :class="{ 'tui-hump-box': hump }"></view>
