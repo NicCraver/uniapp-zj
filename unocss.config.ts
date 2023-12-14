@@ -1,5 +1,10 @@
 import type { Preset, Rule } from 'unocss';
-import { defineConfig, presetAttributify, presetUno } from 'unocss';
+import {
+  defineConfig,
+  presetAttributify,
+  presetIcons,
+  presetUno
+} from 'unocss';
 
 import presetRemToRpx from './preset-rem-to-rpx';
 
@@ -18,6 +23,10 @@ export default defineConfig({
   presets: [
     presetAttributify(),
     presetUno(),
+    presetIcons({
+      scale: 1.2,
+      warn: true
+    }),
     presetRemToRpx({
       baseFontSize: 4
     }) as Preset

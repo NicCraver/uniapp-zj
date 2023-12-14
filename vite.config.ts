@@ -6,6 +6,7 @@ import Unocss from 'unocss/vite';
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 import { defineConfig } from 'vite';
+import { NutResolver } from 'nutui-uniapp';
 
 import env from './src/config/env';
 
@@ -21,6 +22,7 @@ export default defineConfig({
     PiniaAutoRefs(),
     AutoImport({
       dts: 'src/auto-imports.d.ts',
+      dirs: ['src/hooks'],
       imports: [
         'vue',
         'uni-app',
@@ -35,12 +37,21 @@ export default defineConfig({
       }
     }),
     Components({
+      resolvers: [NutResolver()],
       extensions: ['vue'],
       dts: 'src/components.d.ts'
     }),
     uni(),
     Unocss()
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData:
+          "@import '@/static/css/custom_theme.scss';@import 'nutui-uniapp/styles/variables.scss';"
+      }
+    }
+  },
   server: {
     open: true, // 自动打开
     base: './ ', // 生产环境路径
