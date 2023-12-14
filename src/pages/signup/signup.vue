@@ -57,33 +57,25 @@ async function login() {
 }
 
 function checkPassword() {
-  const missingComponents: string[] = [];
   let tempText = '';
-  if (!state.account) tempText += '账号不能为空';
-  if (!state.code)
-    tempText += tempText !== '' ? ',验证码不能为空' : '验证码不能为空';
-  if (!state.passWord) missingComponents.push('密码不能为空');
-  if (!/[A-Z]/.test(state.passWord)) missingComponents.push('缺少大写字母');
-  if (!/[a-z]/.test(state.passWord)) missingComponents.push('缺少小写字母');
-  if (!/[0-9]/.test(state.passWord)) missingComponents.push('缺少数字');
 
-  if (missingComponents.length === 0) {
+  if (state.account === '' || state.account.length !== 11)
+    tempText += '请填写完整的手机号码';
+  if (state.code === '')
+    tempText += tempText !== '' ? ',验证码不能为空' : '验证码不能为空';
+  if (state.passWord === '')
+    tempText += tempText !== '' ? ',密码不能为空' : '密码不能为空';
+  if (!/[A-Z]/.test(state.passWord))
+    tempText += tempText !== '' ? ',密码缺少大写字母' : '密码缺少大写字母';
+  if (!/[a-z]/.test(state.passWord))
+    tempText += tempText !== '' ? ',密码缺少小写字母' : '密码缺少小写字母';
+  if (!/[0-9]/.test(state.passWord))
+    tempText += tempText !== '' ? ',密码缺少数字' : '密码缺少数字';
+
+  if (tempText === '') {
     return true;
   } else {
-    console.log(
-      `${
-        tempText !== '' ? `${tempText};` : tempText
-      }密码不符合要求: ${missingComponents.join(', ')}`
-    );
-
-    toastRef.value?.showToast.fail(
-      `${
-        tempText !== '' ? `${tempText};` : tempText
-      }密码不符合要求: ${missingComponents.join(', ')}`,
-      {
-        duration: 1000
-      }
-    );
+    toastRef.value?.showToast.fail(tempText, { duration: 1200 });
     return false;
   }
 }

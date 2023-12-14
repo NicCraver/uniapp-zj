@@ -79,6 +79,19 @@
           }
         }
       ]
+    },
+    // forgotPassword
+    {
+      "root": "pages/forgotPassword",
+      "pages": [
+        {
+          "name": "forgotPassword",
+          "path": "forgotPassword",
+          "style": {
+            "navigationBarTitleText": "忘记密码"
+          }
+        }
+      ]
     }
   ],
   "globalStyle": {
@@ -99,8 +112,20 @@
         "text": "首页"
       },
       {
+        "pagePath": "pages/administration/administration",
+        "text": "管理"
+      },
+      {
+        "pagePath": "pages/unlocking/unlocking",
+        "text": "开锁"
+      },
+      {
+        "pagePath": "pages/settings/settings",
+        "text": "设置"
+      },
+      {
         "pagePath": "pages/profile/profile",
-        "text": "个人"
+        "text": "我的"
       }
     ]
   },

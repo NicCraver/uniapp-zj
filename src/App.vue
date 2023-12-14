@@ -12,7 +12,7 @@ onHide(() => {
 });
 onMounted(() => {
   console.log('App Show');
-  uni.clearStorageSync();
+  // uni.clearStorageSync();
   const userToken = uni.getStorageSync('token');
   if (!userToken) {
     // uni.showToast({
@@ -20,8 +20,10 @@ onMounted(() => {
     //   icon: 'none'
     // });
     // reLaunch防止登录页出现返回操作
-    // uni.redirectTo({ url: '/pages/loginOrSignup/loginOrSignup' });
-    uni.redirectTo({ url: '/pages/login/login' });
+    uni.redirectTo({ url: '/pages/loginOrSignup/loginOrSignup' });
+    // uni.redirectTo({ url: '/pages/login/login' });
+    // uni.redirectTo({ url: '/pages/forgotPassword/forgotPassword' });
+    // uni.switchTab({ url: '/pages/index/index' });
   }
 });
 </script>
