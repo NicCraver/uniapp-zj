@@ -299,6 +299,55 @@
         }
       ]
     },
+    // admin
+    {
+      "root": "pages/settings",
+      "pages": [
+        {
+          "name": "doorLockRoom",
+          "path": "doorLockRoom",
+          "style": {
+            "navigationBarTitleText": "门锁房间",
+            "app-plus": {
+              "bounce": "none"
+            }
+          }
+        },
+        // 需要帮助
+        {
+          "name": "needHelp",
+          "path": "needHelp",
+          "style": {
+            "navigationBarTitleText": "需要帮助",
+            "app-plus": {
+              "bounce": "none"
+            }
+          }
+        },
+        // 门锁使用说明
+        {
+          "name": "doorLock",
+          "path": "doorLock",
+          "style": {
+            "navigationBarTitleText": "门锁使用说明",
+            "app-plus": {
+              "bounce": "none"
+            }
+          }
+        },
+        // 注意事项
+        {
+          "name": "notice",
+          "path": "notice",
+          "style": {
+            "navigationBarTitleText": "注意事项",
+            "app-plus": {
+              "bounce": "none"
+            }
+          }
+        },
+      ]
+    },
   ],
   "globalStyle": {
     "navigationStyle": "custom",

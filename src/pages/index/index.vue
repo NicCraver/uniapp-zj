@@ -122,7 +122,6 @@ onMounted(() => {
   // 获取页面宽度
   const width = uni.getSystemInfoSync().windowWidth;
   console.log(`width`, width);
-  console.log(`isAndroid()`, isAndroid());
   if (isAndroid()) {
     pageWidth.value = Math.ceil(width / 1.9) - 20;
   } else {
