@@ -12,9 +12,12 @@ declare module '@vue/runtime-core' {
     Black: typeof import('./components/Black.vue')['default']
     GlobalNavbar: typeof import('./components/GlobalNavbar.vue')['default']
     ImgNavbar: typeof import('./components/ImgNavbar.vue')['default']
+    LayoutDefault: typeof import('./components/LayoutDefault.vue')['default']
+    LayoutTabbar: typeof import('./components/LayoutTabbar.vue')['default']
     PullList: typeof import('./components/pullList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TabBar: typeof import('./components/TabBar.vue')['default']
+    UnlockRecordItem: typeof import('./components/UnlockRecordItem.vue')['default']
   }
 }

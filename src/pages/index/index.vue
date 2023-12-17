@@ -1,145 +1,490 @@
 <script setup>
-// import { useTitle } from '@/hooks/useTitle';
-// import { forward } from '@/utils/router';
+import dayjs from 'dayjs';
+const statusBarHeight = ref(uni.getSystemInfoSync().statusBarHeight || 0);
 
-// const { title, changeTitle } = useTitle();
-// function goTest() {
-//   forward('test', {
-//     a: 1
-//   });
-// }
+const pageWidth = ref(0);
+const showRound = ref(false);
+const textTop = ref(0);
+const iconTop = ref(0);
 
-const textName = ref('');
-const textPhone = ref('');
-const dataList = ref([]);
+const today = ref(dayjs().format('MM月DD日'));
+// const week = ref(dayjs().format('dddd'));
+const week = ref(dayjs().format('ddd'));
+
 const isShow = computed(() => {
   return !uni.getStorageSync('token');
 });
-onMounted(() => {
-  // dataList.value = formattedData(contacts2);
-  // 整理数据
-  function formattedData(params) {
-    const formattedContacts = [];
-    for (let i = 0; i < params.length; i++) {
-      const el = params[i];
-      if (
-        el.phoneNumbers &&
-        el.phoneNumbers.length > 0 &&
-        el.displayName !== ''
-      ) {
-        // el.phoneNumbers[0].value 去掉空格
-        el.phoneNumbers[0].value = el.phoneNumbers[0].value.replace(/\s/g, '');
-        formattedContacts.push({
-          id: el.id,
-          name: el.displayName,
-          phone: el.phoneNumbers[0].value
-        });
-      }
-    }
-    return formattedContacts;
+
+const dateList = ref([]);
+const doorLockList = ref([
+  {
+    checkbox: true,
+    name: '门锁1'
+  },
+  {
+    checkbox: false,
+    name: '门锁2'
   }
-  console.log(`isH5()`, isH5());
-  console.log(`isApp()`, isApp());
-  console.log(`isWx()`, isWx());
-  // #ifdef APP-PLUS
-  plus.contacts.getAddressBook(
-    plus.contacts.ADDRESSBOOK_PHONE,
-    function (addressbook) {
-      console.log(`addressbook`, JSON.stringify(addressbook));
-      addressbook.find(
-        ['displayName', 'phoneNumbers'],
-        function (contacts) {
-          dataList.value = formattedData(contacts);
-        },
-        function (e) {
-          console.log(`获取通讯录失败：${e.message}`);
-        },
-        { multiple: true }
-      );
-    },
-    function (e) {
-      console.log(`获取通讯录对象失败：${e.message}`);
-    }
-  );
-  // #endif
+]);
+
+onBackPress((options) => {
+  console.log(`options`, options);
+  if (showRound.value) {
+    showRound.value = false;
+    return true;
+  }
 });
-function scanCode() {
-  uni.scanCode({
-    onlyFromCamera: true,
-    success(res) {
-      console.log(`条码类型：${res.scanType}`);
-      console.log(`条码内容：${res.result}`);
+// onBackPress(options) {
+//     // options.from 可以是 'navigateBack' 或 'backbutton'
+//     // 这里可以添加自定义的返回逻辑
+//     // 返回 true 阻止默认返回行为，返回 false 或不返回继续默认返回行为
+
+//     if (条件) {
+//       // 执行一些操作
+//       return true;
+//     } else {
+//       return false;
+//     }
+//   }
+
+const zoomedOut = ref(false);
+const zoomedHeight = ref(0);
+
+const toggleZoom = () => {
+  zoomedOut.value = !zoomedOut.value;
+};
+
+function changeDate(params) {
+  dateList.value.forEach((item) => {
+    item.select = false;
+  });
+  if (params.today) {
+    console.log(`params.today`, params.today);
+    return;
+  }
+  console.log(`params`, params);
+  params.select = !params.select;
+}
+function onSearch() {
+  uni.navigateTo({ url: '/pages/searchDetails/searchDetails' });
+}
+
+function goAdd() {
+  uni.navigateTo({ url: '/pages/addDoorLock/addDoorLock' });
+}
+function scanIt() {
+  uni.navigateTo({ url: '/pages/scanCode/scanCode' });
+}
+
+function itemclick(e) {
+  console.log(`e`, e);
+  doorLockList.value.forEach((el) => {
+    if (el.checkbox) {
+      el.checkbox = false;
     }
   });
+  e.checkbox = true;
 }
-function itemclick(item) {
-  textName.value = item.name;
-  textPhone.value = item.phone;
+const startX = ref('');
+const deltaX = ref('');
+function touchStart(event) {
+  // 记录触摸起始点的横坐标
+  startX.value = event.touches[0].clientX;
 }
+function touchMove(event) {
+  // 计算滑动距离
+  const currentX = event.touches[0].clientX;
+  deltaX.value = currentX - startX.value;
+}
+function touchEnd() {
+  // 判断滑动方向
+  if (deltaX.value > 50) {
+    if (!zoomedOut.value) {
+      zoomedOut.value = true;
+    }
+    // 向右滑动逻辑   这里只建议写一些性能消耗小的逻辑，比如：this.status = !this.status 因为当他的横坐标大于或小于50时，每隔一个数字都会执行一次，所以...非常消化性能
+    console.log('向右滑动逻辑');
+  } else if (deltaX.value < -30) {
+    // 向左滑动逻辑   这里只建议写一些性能消耗小的逻辑，比如：this.status = !this.status 因为当他的横坐标大于或小于50时，每隔一个数字都会执行一次，所以...非常消化性能
+    console.log('向左滑动逻辑');
+    if (zoomedOut.value) {
+      zoomedOut.value = false;
+    }
+  }
+  startX.value = '';
+  deltaX.value = '';
+  // 清除触摸起始点记录，这里也可以写一些比较复杂的逻辑，每滑动一次松后执行。
+}
+
+onMounted(() => {
+  uni.hideTabBar();
+  uni.removeStorageSync('selectedIndex');
+  // 获取页面宽度
+  const width = uni.getSystemInfoSync().windowWidth;
+  console.log(`width`, width);
+  console.log(`isAndroid()`, isAndroid());
+  if (isAndroid()) {
+    pageWidth.value = Math.ceil(width / 1.9) - 20;
+  } else {
+    pageWidth.value = Math.ceil(width / 1.9) - 10;
+  }
+
+  console.log(`pageWidth.value`, pageWidth.value);
+  const weekStartDate = dayjs().startOf('week');
+  for (let i = 0; i < 7; i++) {
+    const date = weekStartDate.add(i, 'day');
+    dateList.value.push({
+      date: date.format('YYYY-MM-DD'),
+      day: date.format('DD'),
+      week: date.format('ddd'),
+      // select 如果是今天true
+      select: false,
+      today: date.isSame(dayjs(), 'day')
+    });
+  }
+  if (isH5()) {
+    iconTop.value = 20;
+    textTop.value = 100;
+    zoomedHeight.value = 160;
+  }
+  if (isApp()) {
+    iconTop.value = statusBarHeight.value + 10;
+    textTop.value = 70;
+    zoomedHeight.value = 90;
+  }
+});
 </script>
 
 <template>
-  <view v-if="!isShow">
-    <GlobalNavbar>
-      <nut-navbar title="测试"> </nut-navbar>
-    </GlobalNavbar>
-    <view class="page-main">
-      <TabBar />
-      <nut-input v-model="textName" placeholder="姓名" />
-      <nut-input v-model="textPhone" placeholder="手机号" />
-      <view py-5px>
-        <button
-          w="80%"
-          h-40px
-          bg="#14A83B"
-          color="#fff"
-          text="16px"
-          rounded="20px"
-          @click="scanCode"
+  <view
+    v-if="!isShow"
+    class="homePageMain"
+    @touchstart="touchStart"
+    @touchmove="touchMove"
+    @touchend="touchEnd"
+  >
+    <div
+      class="hide-dom"
+      :class="{ 'zoom-out2': !zoomedOut }"
+      :style="{
+        paddingTop: `${statusBarHeight + zoomedHeight}px`
+      }"
+      pl-20px
+      text="#fff"
+    >
+      <div text="18px">智能房屋管理</div>
+      <div text="24px" pt-20px font-600>我的门锁</div>
+      <div flex items-center text="#18D24C" mt-40px @click="goAdd">
+        <div i-ri-add-circle-line w-40px h-40px></div>
+        <div>添加</div>
+      </div>
+      <div :style="{ maxWidth: `${pageWidth}px` }" mt-20px>
+        <div v-for="v in doorLockList" :key="v.name">
+          <div flex items-center justify-between @click="itemclick(v)">
+            <div>{{ v.name }}</div>
+            <div
+              v-if="v.checkbox"
+              w-24px
+              h-24px
+              i-mdi-checkbox-marked-circle
+            ></div>
+            <div v-else w-24px h-24px i-mdi-checkbox-blank-circle-outline></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div :class="{ 'zoom-out1': zoomedOut }" class="home-container">
+      <div class="home-main">
+        <!-- <nut-toast ref="toastRef" /> -->
+        <div class="home-bg">
+          <div
+            :style="{
+              paddingTop: `${iconTop}px`
+            }"
+          >
+            <div flex justify-between px-15px>
+              <image
+                w26px
+                h26px
+                src="/static/images/icon_zhankai@2x.png"
+                @click="toggleZoom"
+              />
+              <image
+                w26px
+                h26px
+                src="/static/images/icon_saoma@2x.png"
+                @click="scanIt"
+              />
+            </div>
+            <div
+              text="#fff 20px"
+              :style="{
+                paddingTop: `${textTop}px`
+              }"
+            >
+              智能物联房屋管理
+            </div>
+          </div>
+        </div>
+        <main flex>
+          <div flex items-center justify-center w="60%" class="lock-border">
+            <image w-130px h-250px src="/static/images/image@2x.png" />
+          </div>
+          <div flex w="40%" flex-col text="12px #999">
+            <div h="33.33%" pt-15px pl-10px class="lock-border-b">
+              <div>电池</div>
+              <div flex items-center mt-10px>
+                <image
+                  mr-10px
+                  w-24px
+                  h-12px
+                  src="/static/images/icon_dianliangman@2x.png"
+                />
+                <div text="#333">100%</div>
+              </div>
+            </div>
+            <div h="33.33%" pt-15px pl-10px class="lock-border-b">
+              <div>电池</div>
+              <div flex items-center mt-10px>
+                <image
+                  mr-10px
+                  w-24px
+                  h-12px
+                  src="/static/images/icon_xinhaoman@2x.png"
+                />
+                <div text="#333">100%</div>
+              </div>
+            </div>
+            <div h="33.33%" pt-15px pl-10px>
+              <div>电池</div>
+              <div flex items-center mt-10px>
+                <image
+                  mr-10px
+                  w-20px
+                  h-20px
+                  src="/static/images/icon_lianjie@2x.png"
+                />
+                <div text="#333">已连接</div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <div h-10px bg="#EFEFEF"></div>
+        <div px-15px class="lock-border-b">
+          <div
+            flex
+            items-center
+            justify-between
+            h-68px
+            text="20px #000"
+            lh-68px
+          >
+            <div>
+              {{ today }}
+              {{ week }}
+            </div>
+            <div
+              i-radix-icons-double-arrow-up
+              text="#262727"
+              @click="showRound = true"
+            ></div>
+          </div>
+        </div>
+        <div>
+          <UnlockRecordItem />
+        </div>
+      </div>
+      <footer>
+        <TabBar />
+      </footer>
+    </div>
+
+    <nut-popup
+      v-model:visible="showRound"
+      position="bottom"
+      :custom-style="{ height: '100%', backgroundColor: '#fff' }"
+    >
+      <div :style="{ height: 'calc(100% - 55px)', backgroundColor: '#fff' }">
+        <div
+          :style="{ paddingTop: `${iconTop - 8}px`, position: 'relative' }"
+          text-center
+          pb-12px
         >
-          扫码
-        </button>
-      </view>
-      <view class="page-main">
-        <next-indexed-xlist
-          :data-list="dataList"
-          :show-avatar="true"
-          @itemclick="itemclick"
-        >
-          <!-- 这是默认插槽,额外添加部分 -->
-          <!--    <view class="content-block">
-                <view class="title"><text>历史记录:</text></view>
-                <view class="btn"><text>朝阳区</text></view>
-                <view class="btn"><text>东城区</text></view>
-                <view class="btn"><text>海淀区</text></view>
-            </view> -->
-        </next-indexed-xlist>
-      </view>
-    </view>
+          <div>开锁记录</div>
+          <div
+            :style="{
+              position: 'absolute',
+              top: `${iconTop - 8}px`
+            }"
+            style="right: 15px"
+            i-radix-icons-double-arrow-down
+            text="#262727"
+            @click="showRound = false"
+          ></div>
+        </div>
+        <div bg="#EFEFEF" h="100%">
+          <div h-10px bg="#EFEFEF"></div>
+          <div h-190px pt-10px mb-10px bg="#fff">
+            <div
+              class="search-bar"
+              flex
+              justify-self-start
+              items-center
+              @click="onSearch"
+            >
+              <div i-ri-search-line></div>
+              <div pl-10px>按日期查询更多记录</div>
+            </div>
+            <div px-15px>
+              <div class="date-title">23年12月</div>
+              <div flex justify-between items-center>
+                <div v-for="v in dateList" :key="v.date" text-center>
+                  <div text="14px #666">{{ v.week }}</div>
+                  <div
+                    v-if="v.today"
+                    mt-10px
+                    :bg="v.today ? '#14a83c' : 'fff'"
+                    :text="v.today ? '#fff' : '#000'"
+                    class="date-day"
+                    @click="changeDate(v)"
+                  >
+                    {{ v.day }}
+                  </div>
+                  <div
+                    v-else
+                    class="date-select"
+                    :bg="v.select ? '#14a83c' : 'fff'"
+                    mt-10px
+                    @click="changeDate(v)"
+                  >
+                    <div v-if="!v.select">{{ v.day }}</div>
+                    <div v-else class="date-select-bg">
+                      {{ v.day }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <main>
+            <UnlockRecordItem />
+            <UnlockRecordItem />
+            <UnlockRecordItem />
+          </main>
+        </div>
+      </div>
+    </nut-popup>
   </view>
 </template>
 
 <style lang="scss">
-page {
+:root page {
   height: 100%;
-  overflow: hidden;
 }
-.page-main {
+.homePageMain {
+  height: 100%;
   width: 100%;
-  height: calc(100% - 50px);
-  overflow-y: auto;
+  // background-color: #000;
+  overflow: hidden;
+  position: relative;
+  .hide-dom {
+    background-color: #17a73a;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+  }
+}
+.home-container {
+  z-index: 999;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  transition: transform 0.5s;
 }
 
-.next-scroll-left {
-  padding: 0 !important;
+.zoom-out1 {
+  z-index: 999;
+  // width: 80%;
+  // height: 600px;
+  transform: scale(0.7) translateX(240px);
 }
+.zoom-out2 {
+  z-index: -10;
+  // width: 80%;
+  // height: 600px;
+  // transform: scale(0.7) translateX(240px);
+}
+.home-main {
+  width: 100%;
+  height: 100%;
 
-.next-search {
-  position: relative !important;
-  width: 100% !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  z-index: 10 !important;
+  .nut-input {
+    padding: 10px 5px !important;
+  }
+  .home-bg {
+    overflow: hidden;
+    height: 240px;
+    text-align: center;
+    // 背景图片
+    background-image: url(/static/images/bg@2x.png);
+    background-size: 100% 100%;
+    background-position: center;
+    // 阴影
+    // box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.5);
+  }
+  .lock-border {
+    border-right: 1px solid #e2e2e2;
+  }
+  .lock-border-b {
+    border-bottom: 1px solid #e2e2e2;
+  }
+}
+.date-title {
+  background: #14a83c;
+  border-radius: 15px 15px 15px 15px;
+  opacity: 1;
+  color: #fff;
+  width: 100px;
+  text-align: center;
+  padding: 4px 0;
+  margin: 15px 0 20px 0;
+}
+.date-day {
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  font-size: 14px;
+}
+.date-select {
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  font-size: 14px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.date-select-bg {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  border-radius: 50%;
+  background: #fff;
+  text-align: center;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+}
+.search-bar {
+  margin: 0 10px;
+  height: 40px;
+  border-radius: 20px 20px 20px 20px;
+  border: 1px solid #e2e2e2;
+  font-size: 14px;
+  color: #666;
+  padding: 0 15px;
 }
 </style>

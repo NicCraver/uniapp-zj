@@ -1,8 +1,8 @@
 <script lang="ts" setup></script>
 
 <template>
-  <LayoutTabbar title="我的">
-    <div>我的</div>
+  <LayoutTabbar title="设置">
+    <div>设置</div>
   </LayoutTabbar>
 </template>
 

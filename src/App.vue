@@ -14,6 +14,8 @@ onMounted(() => {
   console.log('App Show');
   // uni.clearStorageSync();
   const userToken = uni.getStorageSync('token');
+  // uni.switchTab({ url: '/pages/administration/administration' });
+  // uni.redirectTo({ url: '/pages/admin/addTempAuth' });
   if (!userToken) {
     // uni.showToast({
     //   title: '请重新登录',

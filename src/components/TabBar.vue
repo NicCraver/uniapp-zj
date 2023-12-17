@@ -1,175 +1,103 @@
-<script>
-export default {
-  name: 'TuiTabbar',
-  props: {
-    // 字体颜色
-    color: {
-      type: String,
-      default: '#999'
-    },
-    // 字体选中颜色
-    selectedColor: {
-      type: String,
-      default: '#14A83B'
-    },
-    // 背景颜色
-    backgroundColor: {
-      type: String,
-      default: '#FFFFFF'
-    },
-    // 是否需要中间凸起按钮
-    hump: {
-      type: Boolean,
-      default: true
-    },
-    // 固定在底部
-    isFixed: {
-      type: Boolean,
-      default: true
-    },
-    // 角标字体颜色
-    badgeColor: {
-      type: String,
-      default: '#fff'
-    },
-    // 角标背景颜色
-    badgeBgColor: {
-      type: String,
-      default: '#F74D54'
-    },
-    unlined: {
-      type: Boolean,
-      default: false
-    }
+<script lang="ts" setup>
+const props = defineProps({
+  // 字体颜色
+  color: {
+    type: String,
+    default: '#999'
   },
-  data() {
-    return {
-      current: 0,
-      tabBar: [
-        {
-          pagePath: '/pages/index/index',
-          text: '门锁',
-          iconPath: '/static/images/icon_mensuoweixuanzhong@2x.png',
-          selectedIconPath: '/static/images/icon_mensuoxuanzhong@2x.png',
-          num: 0,
-          isDot: false,
-          verify: true
-        },
-        {
-          pagePath: '/pages/index/index',
-          text: '管理',
-          iconPath: '/static/images/icon_guanliweixuanzhong@2x.png',
-          selectedIconPath: '/static/images/icon_guanlixuanzhong@2x.png',
-          num: 0,
-          isDot: false,
-          verify: true
-        },
-        {
-          pagePath: '/pages/extend/extend',
-          text: 'extend',
-          iconPath: '/static/images/icon_xuanchengkaisuo@2x.png',
-          hump: true,
-          verify: true,
-          selectedIconPath: '/static/images/icon_xuanchengkaisuo@2x.png'
-        },
-        {
-          pagePath: '/pages/my/my',
-          text: '设置',
-          iconPath: '/static/images/icon_shezhiweixuanzhong@2x.png',
-          selectedIconPath: '/static/images/icon_shezhixuanzhong@2x.png',
-          num: 0,
-          isDot: true,
-          verify: true
-        },
-        {
-          pagePath: '/pages/profile/profile',
-          text: '我的',
-          iconPath: '/static/images/icon_wodeweixuanzhong@2x.png',
-          selectedIconPath: '/static/images/icon_wodexuanzhong@2x.png',
-          num: 0,
-          isDot: true,
-          verify: true
-        }
-      ],
-      tabBarIndex: 0
-    };
+  // 字体选中颜色
+  selectedColor: {
+    type: String,
+    default: '#14A83B'
   },
-  watch: {
-    tabBarIndex() {
-      this.current = this.tabBarIndex;
-    }
+  // 背景颜色
+  backgroundColor: {
+    type: String,
+    default: '#FFFFFF'
   },
-  created() {
-    this.current = this.tabBarIndex;
+  // 是否需要中间凸起按钮
+  hump: {
+    type: Boolean,
+    default: true
   },
-  methods: {
-    changeTabBar(state, payload) {
-      if (payload) {
-        state.tabBarIndex = payload.index;
-      }
-    },
-    tabbarSwitch(index, hump, pagePath, verify) {
-      console.log(`pagePath`, pagePath);
-      if (verify) {
-        this.changeTabBar({
-          index
-        });
-        uni.switchTab({
-          url: pagePath
-        });
-      } else {
-        this.$emit('click', {
-          index,
-          hump,
-          pagePath,
-          verify
-        });
-      }
-    }
+  // 固定在底部
+  isFixed: {
+    type: Boolean,
+    default: true
+  },
+  // 角标字体颜色
+  badgeColor: {
+    type: String,
+    default: '#fff'
+  },
+  // 角标背景颜色
+  badgeBgColor: {
+    type: String,
+    default: '#F74D54'
+  },
+  unlined: {
+    type: Boolean,
+    default: false
   }
-};
+});
+
+const { current, tabBar, tabbarSwitch, setTableHeight } = useStore('tabbar');
+onMounted(() => {
+  const pages = getCurrentPages(); // 获取栈实例
+  const currentRoute = `/${pages[pages.length - 1].route}`; // 获取当前页面路由
+  const index = tabBar.value.findIndex(
+    (item) => item.pagePath === currentRoute
+  );
+  const temp = tabBar.value.find((item) => item.pagePath === currentRoute);
+  tabbarSwitch(index, temp?.hump, temp?.pagePath, temp?.verify);
+
+  uni
+    .createSelectorQuery()
+    .select('.tui-tabbar')
+    .boundingClientRect(function (rect: any) {
+      if (rect) {
+        console.log('==', rect.height); // 元素的高度
+        setTableHeight(rect.height);
+      }
+    })
+    .exec();
+});
 </script>
 
 <template>
-  <view
+  <div
     class="tui-tabbar"
     :class="{ 'tui-tabbar-fixed': isFixed, 'tui-unlined': unlined }"
     :style="{ background: backgroundColor }"
   >
     <block v-for="(item, index) in tabBar" :key="index">
-      <view
+      <div
         class="tui-tabbar-item"
         :class="{ 'tui-item-hump': item.hump }"
         :style="{ backgroundColor: item.hump ? backgroundColor : 'none' }"
         @tap="tabbarSwitch(index, item.hump, item.pagePath, item.verify)"
       >
-        <view class="tui-icon-box" :class="{ 'tui-tabbar-hump': item.hump }">
+        <div class="tui-icon-box" :class="{ 'tui-tabbar-hump': item.hump }">
           <image
             :src="current === index ? item.selectedIconPath : item.iconPath"
             :class="[item.hump ? '' : 'tui-tabbar-icon']"
           ></image>
-          <view
-            v-if="item.num"
-            :class="[item.isDot ? 'tui-badge-dot' : 'tui-badge']"
-            :style="{ color: badgeColor, backgroundColor: badgeBgColor }"
-            >{{ item.isDot ? '' : item.num }}</view
-          >
-        </view>
-        <view
+        </div>
+        <div
           v-if="index !== 2"
           class="tui-text-scale"
           :class="{ 'tui-text-hump': item.hump }"
           :style="{ color: current === index ? selectedColor : color }"
         >
           {{ item.text }}
-        </view>
-      </view>
+        </div>
+      </div>
     </block>
-    <view v-if="hump && !unlined" :class="{ 'tui-hump-box': hump }"></view>
-  </view>
+    <div v-if="hump && !unlined" :class="{ 'tui-hump-box': hump }"></div>
+  </div>
 </template>
 
-<style>
+<style lang="scss">
 .tui-tabbar {
   width: 100%;
   height: 100rpx;
@@ -234,7 +162,7 @@ export default {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  top: -50rpx;
+  top: -10px;
   border-radius: 50%;
   z-index: 1;
 }
@@ -262,7 +190,7 @@ export default {
   position: absolute;
   left: 50%;
   transform: translateX(-50%) rotate(0deg);
-  top: -40rpx;
+  top: -20px;
   transition: all 0.2s linear;
 }
 

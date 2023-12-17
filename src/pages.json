@@ -4,14 +4,51 @@
       "name": "index",
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "首页"
+        "navigationBarTitleText": "首页",
+        "app-plus": {
+          "bounce": "none"
+        }
       }
     },
     {
       "name": "profile",
       "path": "pages/profile/profile",
       "style": {
-        "navigationBarTitleText": "个人"
+        "navigationBarTitleText": "个人",
+        "app-plus": {
+          "bounce": "none"
+        }
+      }
+    },
+    {
+      "name": "administration",
+      "path": "pages/administration/administration",
+      "style": {
+        "navigationBarTitleText": "管理",
+        "app-plus": {
+          "bounce": "none"
+        }
+      }
+    },
+    {
+      "name": "unlocking",
+      "path": "pages/unlocking/unlocking",
+      "style": {
+        "navigationBarTitleText": "解锁",
+        "app-plus": {
+          "bounce": "none"
+        }
+      }
+    },
+    // settings
+    {
+      "name": "settings",
+      "path": "pages/settings/settings",
+      "style": {
+        "navigationBarTitleText": "设置",
+        "app-plus": {
+          "bounce": "none"
+        }
       }
     }
   ],
@@ -23,7 +60,10 @@
           "name": "test",
           "path": "test",
           "style": {
-            "navigationBarTitleText": "测试"
+            "navigationBarTitleText": "测试",
+            "app-plus": {
+              "bounce": "none"
+            }
           }
         }
       ]
@@ -36,7 +76,10 @@
           "name": "login",
           "path": "login",
           "style": {
-            "navigationBarTitleText": "登录"
+            "navigationBarTitleText": "登录",
+            "app-plus": {
+              "bounce": "none"
+            }
           }
         }
       ]
@@ -49,7 +92,10 @@
           "name": "loginOrSignup",
           "path": "loginOrSignup",
           "style": {
-            "navigationBarTitleText": "登录/注册"
+            "navigationBarTitleText": "登录/注册",
+            "app-plus": {
+              "bounce": "none"
+            }
           }
         }
       ]
@@ -62,7 +108,10 @@
           "name": "signup",
           "path": "signup",
           "style": {
-            "navigationBarTitleText": "注册"
+            "navigationBarTitleText": "注册",
+            "app-plus": {
+              "bounce": "none"
+            }
           }
         }
       ]
@@ -75,7 +124,10 @@
           "name": "protocol",
           "path": "protocol",
           "style": {
-            "navigationBarTitleText": "服务协议"
+            "navigationBarTitleText": "服务协议",
+            "app-plus": {
+              "bounce": "none"
+            }
           }
         }
       ]
@@ -88,14 +140,168 @@
           "name": "forgotPassword",
           "path": "forgotPassword",
           "style": {
-            "navigationBarTitleText": "忘记密码"
+            "navigationBarTitleText": "忘记密码",
+            "app-plus": {
+              "bounce": "none"
+            }
           }
         }
       ]
-    }
+    },
+    // searchDetails
+    {
+      "root": "pages/searchDetails",
+      "pages": [
+        {
+          "name": "searchDetails",
+          "path": "searchDetails",
+          "style": {
+            "navigationBarTitleText": "搜索详情",
+            "app-plus": {
+              "bounce": "none"
+            }
+          }
+        }
+      ]
+    },
+    // addDoorLock
+    {
+      "root": "pages/addDoorLock",
+      "pages": [
+        {
+          "name": "addDoorLock",
+          "path": "addDoorLock",
+          "style": {
+            "navigationBarTitleText": "添加门锁",
+            "app-plus": {
+              "bounce": "none"
+            }
+          }
+        }
+      ]
+    },
+    // scanCode
+    {
+      "root": "pages/scanCode",
+      "pages": [
+        {
+          "name": "scanCode",
+          "path": "scanCode",
+          "style": {
+            "navigationBarTitleText": "扫码",
+            "app-plus": {
+              "bounce": "none"
+            }
+          }
+        }
+      ]
+    },
+    // manualAdd
+    {
+      "root": "pages/manualAdd",
+      "pages": [
+        {
+          "name": "manualAdd",
+          "path": "manualAdd",
+          "style": {
+            "navigationBarTitleText": "手动添加",
+            "app-plus": {
+              "bounce": "none"
+            }
+          }
+        }
+      ]
+    },
+    // admin
+    {
+      "root": "pages/admin",
+      "pages": [
+        {
+          "name": "addMembers",
+          "path": "addMembers",
+          "style": {
+            "navigationBarTitleText": "添加成员",
+            "app-plus": {
+              "bounce": "none"
+            }
+          }
+        },
+        // 管理员详情
+        {
+          "name": "adminDetail",
+          "path": "adminDetail",
+          "style": {
+            "navigationBarTitleText": "管理员详情",
+            "app-plus": {
+              "bounce": "none"
+            }
+          }
+        },
+        // 设置开锁密码
+        {
+          "name": "setLockPassword",
+          "path": "setLockPassword",
+          "style": {
+            "navigationBarTitleText": "设置开锁密码",
+            "app-plus": {
+              "bounce": "none"
+            }
+          }
+        },
+        // 添加指纹
+        {
+          "name": "addFinger",
+          "path": "addFinger",
+          "style": {
+            "navigationBarTitleText": "添加指纹",
+            "app-plus": {
+              "bounce": "none"
+            }
+          }
+        },
+        // 成员详情
+        {
+          "name": "memberDetail",
+          "path": "memberDetail",
+          "style": {
+            "navigationBarTitleText": "成员详情",
+            "app-plus": {
+              "bounce": "none"
+            }
+          }
+        },
+        // 添加临时授权
+        {
+          "name": "addTempAuth",
+          "path": "addTempAuth",
+          "style": {
+            "navigationBarTitleText": "添加临时授权",
+            "app-plus": {
+              "bounce": "none"
+            }
+          }
+        }
+      ]
+    },
+    // 远程开锁
+    {
+      "root": "pages/remoteLock",
+      "pages": [
+        {
+          "name": "remoteLock",
+          "path": "remoteLock",
+          "style": {
+            "navigationBarTitleText": "远程开锁",
+            "app-plus": {
+              "bounce": "none"
+            }
+          }
+        }
+      ]
+    },
   ],
   "globalStyle": {
-    "navigationStyle":"custom",
+    "navigationStyle": "custom",
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "uni-app",
     "navigationBarBackgroundColor": "#FFF",
@@ -115,10 +321,10 @@
         "pagePath": "pages/administration/administration",
         "text": "管理"
       },
-      {
-        "pagePath": "pages/unlocking/unlocking",
-        "text": "开锁"
-      },
+      // {
+      //   "pagePath": "pages/unlocking/unlocking",
+      //   "text": "开锁"
+      // },
       {
         "pagePath": "pages/settings/settings",
         "text": "设置"

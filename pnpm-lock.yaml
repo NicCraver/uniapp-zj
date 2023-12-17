@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@dcloudio/uni-app':
     specifier: 3.0.0-3090820231124001
@@ -46,6 +50,9 @@ dependencies:
   '@iconify-json/material-symbols':
     specifier: ^1.1.67
     version: 1.1.67
+  dayjs:
+    specifier: ^1.11.10
+    version: 1.11.10
   js-pinyin:
     specifier: ^0.2.5
     version: 0.2.5
@@ -90,6 +97,15 @@ devDependencies:
   '@dcloudio/vite-plugin-uni':
     specifier: 3.0.0-3090820231124001
     version: 3.0.0-3090820231124001(postcss@8.4.32)(ts-node@10.9.2)(vite@4.0.3)(vue@3.2.47)
+  '@iconify-json/material-symbols-light':
+    specifier: ^1.1.7
+    version: 1.1.7
+  '@iconify-json/mdi':
+    specifier: ^1.1.62
+    version: 1.1.62
+  '@iconify-json/radix-icons':
+    specifier: ^1.1.14
+    version: 1.1.14
   '@iconify-json/ri':
     specifier: ^1.1.17
     version: 1.1.17
@@ -2707,11 +2723,29 @@ packages:
     resolution: {integrity: sha512-dvuCeX5fC9dXgJn9t+X5atfmgQAzUOWqS1254Gh0m6i8wKd10ebXkfNKiRK+1GWi/yTvvLDHpoxLr0xxxeslWw==}
     dev: true
 
+  /@iconify-json/material-symbols-light@1.1.7:
+    resolution: {integrity: sha512-HqYIHNqAgQoFOyZlPEvF+d4L/4Jpcyka0AvpXP8eCVF+ASbTIL4MZ+hlIVupAeStS2Yb8y5o3CUOSXevw5guLw==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
   /@iconify-json/material-symbols@1.1.67:
     resolution: {integrity: sha512-wGvPLGMfunJL0sGzRVjZ7TUng86d5JMKBlRnOhHU+lBYaeeJmbKWQOQ6aJPK0oxl0PJBnNctHDitXTDTobe4Ng==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: false
+
+  /@iconify-json/mdi@1.1.62:
+    resolution: {integrity: sha512-VEfnaIwO++vZ5xUYdbPuB303E1Db29kRfkd+n9dxC0zQQ6fTy4TEI2Q79TYZtEPwiIOWOy8pudTbOv4GLUaziA==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
+  /@iconify-json/radix-icons@1.1.14:
+    resolution: {integrity: sha512-AYBOyhnJ2hXlg3aIn8Ekphrr7zHRyz1l8x6bidM3PDUuTL+aRt8r6cpCvN3GeuTHy2JOhmihbVJRF0bt2FF7Ag==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
 
   /@iconify-json/ri@1.1.17:
     resolution: {integrity: sha512-FN6dynUF7GjVsDU9twvzreN+3gpWiJwpD7FJelHFVPjHNW7U4CDAnw4mEWLaqscB7npJVXLidYKdI03Mh0apTQ==}
@@ -5280,6 +5314,10 @@ packages:
       whatwg-mimetype: 2.3.0
       whatwg-url: 8.7.0
     dev: true
+
+  /dayjs@1.11.10:
+    resolution: {integrity: sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==}
+    dev: false
 
   /de-indent@1.0.2:
     resolution: {integrity: sha512-e/1zu3xH5MQryN2zdVaF0OrdNLUbvWxzMbi+iNA6Bky7l1RoP8a2fIbRocyHclXt/arDrrR6lL3TqFD9pMQTsg==}

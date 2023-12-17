@@ -5,7 +5,7 @@ defineProps({
     default: '#fff'
   }
 });
-function goBlack() {
+function goBack() {
   uni.navigateBack();
 }
 </script>
@@ -14,7 +14,7 @@ function goBlack() {
   <div
     i-material-symbols-arrow-back-ios-new
     :text="color"
-    @click="goBlack()"
+    @click="goBack()"
   ></div>
 </template>
 

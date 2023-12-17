@@ -282,7 +282,7 @@ export default {
         :key="index"
         class="next-scroll-right-name"
         :class="{
-          'next-scroll-right-select': item == scrollIntoViewCopy
+          'next-scroll-right-select': item === scrollIntoViewCopy
         }"
         @click.stop="chooseType(item)"
         >{{ item }}
@@ -291,7 +291,7 @@ export default {
   </view>
 </template>
 
-<style>
+<style lang="scss">
 /deep/ ::-webkit-scrollbar {
   width: 0;
   height: 0;
