@@ -46,7 +46,7 @@ export const apiGetLockTypes = () =>
 export const test = (params: any) => http.post<PostTest.data>('/test', params);
 
 export function test1() {
-  apiAddLockList({})
+  apiDoorUserLogCtrl({})
     .then((res) => {
       console.log(`res===`, res);
     })
