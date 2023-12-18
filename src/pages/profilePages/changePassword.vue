@@ -59,7 +59,7 @@ onMounted(() => {});
 </script>
 
 <template>
-  <LayoutDefault title="添加成员">
+  <LayoutDefault title="修改密码">
     <template #left>
       <Black text="#262727" />
     </template>
@@ -71,7 +71,7 @@ onMounted(() => {});
           name: [{ required: true, message: '请填写姓名' }]
         }"
       >
-        <nut-form-item label="用户姓名" prop="name">
+        <nut-form-item label="用户姓名">
           <nut-input
             v-model="formData.name"
             class="nut-input-text"
@@ -79,37 +79,26 @@ onMounted(() => {});
             type="text"
           />
         </nut-form-item>
-        <nut-form-item
-          label="手机号码"
-          prop="tel"
-          required
-          :rules="[
-            { required: true, message: '请填写联系电话' },
-            {
-              regex: /^\d+$/,
-              message: '必须输入数字'
-            },
-            {
-              regex: /^(?:(?:\+|00)86)?1\d{10}$/,
-              message: '请输入正确的手机号'
-            }
-          ]"
-        >
+        <nut-form-item label="新密码" prop="name">
           <nut-input
-            v-model="formData.tel"
+            v-model="formData.name"
             class="nut-input-text"
-            placeholder="请输入11位手机号码"
+            placeholder="请输入新密码"
             type="text"
-          >
-            <!-- #ifdef APP -->
-            <template #right>
-              <div text="#E2E2E2">|</div>
-              <div text="#14a83b" pl-10px @click="openAddressBook">通讯录</div>
-            </template>
-            <!-- #endif -->
-          </nut-input>
+          />
+        </nut-form-item>
+        <nut-form-item label="确认密码" prop="name">
+          <nut-input
+            v-model="formData.name"
+            class="nut-input-text"
+            placeholder="请再次输入新密码"
+            type="text"
+          />
         </nut-form-item>
       </nut-form>
+      <div text="12px #666" pl-10px>
+        密码需包含字母及数字组合（不能是纯数字）
+      </div>
       <button
         mt-40px
         w="90%"
@@ -120,7 +109,7 @@ onMounted(() => {});
         rounded="20px"
         @click="submit"
       >
-        添加成员
+        确认修改
       </button>
     </div>
   </LayoutDefault>

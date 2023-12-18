@@ -299,9 +299,9 @@
         }
       ]
     },
-    // admin
+    // 设置页面
     {
-      "root": "pages/settings",
+      "root": "pages/settingPages",
       "pages": [
         {
           "name": "doorLockRoom",
@@ -348,6 +348,44 @@
         },
       ]
     },
+    {
+      "root": "pages/profilePages",
+      "pages": [
+        // 修改密码
+        {
+          "name": "changePassword",
+          "path": "changePassword",
+          "style": {
+            "navigationBarTitleText": "修改密码",
+            "app-plus": {
+              "bounce": "none"
+            }
+          }
+        },
+        // 隐私政策
+        {
+          "name": "privacyPolicy",
+          "path": "privacyPolicy",
+          "style": {
+            "navigationBarTitleText": "隐私政策",
+            "app-plus": {
+              "bounce": "none"
+            }
+          }
+        },
+        // 关于我们
+        {
+          "name": "aboutUs",
+          "path": "aboutUs",
+          "style": {
+            "navigationBarTitleText": "关于我们",
+            "app-plus": {
+              "bounce": "none"
+            }
+          }
+        }
+      ]
+    }
   ],
   "globalStyle": {
     "navigationStyle": "custom",

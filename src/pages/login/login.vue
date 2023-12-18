@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { ToastInst } from 'nutui-uniapp';
-import { forward } from '@/utils/router';
 
 const toastRef = ref<ToastInst>();
 
@@ -36,22 +35,39 @@ function changeType() {
   state.code = '';
 }
 
-async function login() {
+function login() {
   if (isLoading.value) {
     return;
   }
   isLoading.value = true;
   if (validate()) {
-    toastRef.value?.showToast.success('登陆成功', {
-      duration: 800
-    });
-    setTimeout(() => {
-      // 存储token
-      uni.setStorageSync('token', '123456');
-      forward('index');
-      isLoading.value = false;
-      toastRef.value?.hideToast();
-    }, 800);
+    apiLogin({
+      username: state.account,
+      password: state.passWord
+    })
+      .then((res) => {
+        console.log(`res===`, res);
+        // uni.setStorageSync('token', '123456');
+        // forward('index');
+        isLoading.value = false;
+      })
+      .catch((err) => {
+        console.log(`err====`, err);
+        isLoading.value = false;
+      });
+    //   toastRef.value?.showToast.success('登陆成功', {
+    //     duration: 800
+    //   });
+    //   setTimeout(() => {
+    //     const params = {};
+    //     if (state.type) {
+    //     }
+    //     // 存储token
+    //     uni.setStorageSync('token', '123456');
+    //     forward('index');
+    //     isLoading.value = false;
+    //     toastRef.value?.hideToast();
+    //   }, 800);
   } else {
     setTimeout(() => {
       toastRef.value?.hideToast();

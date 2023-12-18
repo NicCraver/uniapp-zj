@@ -1,7 +1,7 @@
 <script setup>
 function goPage(params) {
   console.log(`params`, params);
-  uni.navigateTo({ url: `/pages/settings/${params}` });
+  uni.navigateTo({ url: `/pages/settingPages/${params}` });
 }
 </script>
 

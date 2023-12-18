@@ -2,7 +2,7 @@
 const doorLockName = ref('挚家');
 const doorLockVersion = ref('V1.1.1');
 function goPage(params) {
-  uni.navigateTo({ url: `/pages/settings/${params}` });
+  uni.navigateTo({ url: `/pages/settingPages/${params}` });
 }
 function list() {
   console.log(`222222`, 222222);

@@ -57,6 +57,9 @@ export default defineStore({
     setTableHeight(height) {
       this.tableHeight = height + 20;
     },
+    setCurrent() {
+      this.current = 0;
+    },
     tabbarSwitch(index, hump, pagePath, verify) {
       if (verify) {
         this.current = index;

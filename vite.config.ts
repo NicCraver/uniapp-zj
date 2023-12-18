@@ -22,7 +22,7 @@ export default defineConfig({
     PiniaAutoRefs(),
     AutoImport({
       dts: 'src/auto-imports.d.ts',
-      dirs: ['src/hooks'],
+      dirs: ['src/hooks', 'src/api'],
       imports: [
         'vue',
         'uni-app',
