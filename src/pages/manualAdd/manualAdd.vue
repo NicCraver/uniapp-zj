@@ -3,14 +3,48 @@ const result = ref('');
 onLoad((query: any) => {
   result.value = query.result;
 });
+
+function getLockTypes() {
+  apiGetLockTypes()
+    .then((res) => {
+      console.log(`res===`, res);
+    })
+    .catch((err) => {
+      console.log(`err====`, err);
+    });
+}
 function bindingDoorLock() {
-  console.log(`result.value`, result.value);
   if (result.value) {
-    // uni.redirectTo({ url: '/pages/index/index' });
-    // uni.switchTab({ url: '/pages/index/index' });
-    uni.navigateBack({ delta: 3 });
+    apiAddLockList({
+      hoseid: Math.random().toString(36).substr(2, 8),
+      locktype: 1,
+      deviceid: result.value
+    })
+      .then((res) => {
+        console.log(`res===`, res);
+        uni.showToast({
+          title: '绑定成功',
+          icon: 'success',
+          mask: true
+        });
+        uni.$emit('addDoorLockSuccess');
+        uni.navigateBack({ delta: 3 });
+      })
+      .catch((err) => {
+        console.log(`err====`, err);
+      });
+  } else {
+    uni.showToast({
+      title: '请输入门锁ID',
+      icon: 'none',
+      mask: true
+    });
   }
 }
+
+onMounted(() => {
+  getLockTypes();
+});
 </script>
 
 <template>

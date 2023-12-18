@@ -14,9 +14,6 @@ function add() {
     <template #left>
       <Black text="#262727" />
     </template>
-    <template #right>
-      <div text="14px">退出登录</div>
-    </template>
     <div w="100%" flex justify-center>
       <div w-240px pt-60px>
         <div text="14px #333" pb-200px>

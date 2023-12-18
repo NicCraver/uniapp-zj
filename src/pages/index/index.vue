@@ -1,5 +1,6 @@
 <script setup>
 import dayjs from 'dayjs';
+const { setCurrent } = useStore('tabbar');
 const statusBarHeight = ref(uni.getSystemInfoSync().statusBarHeight || 0);
 
 const pageWidth = ref(0);
@@ -8,14 +9,13 @@ const textTop = ref(0);
 const iconTop = ref(0);
 
 const today = ref(dayjs().format('MM月DD日'));
-// const week = ref(dayjs().format('dddd'));
 const week = ref(dayjs().format('ddd'));
 
-const isShow = computed(() => {
-  return !uni.getStorageSync('token');
-});
+const isShow = ref(true);
+const loading = ref(false);
 
 const dateList = ref([]);
+
 const doorLockList = ref([
   {
     checkbox: true,
@@ -26,6 +26,7 @@ const doorLockList = ref([
     name: '门锁2'
   }
 ]);
+// #region
 
 onBackPress((options) => {
   console.log(`options`, options);
@@ -34,21 +35,12 @@ onBackPress((options) => {
     return true;
   }
 });
-// onBackPress(options) {
-//     // options.from 可以是 'navigateBack' 或 'backbutton'
-//     // 这里可以添加自定义的返回逻辑
-//     // 返回 true 阻止默认返回行为，返回 false 或不返回继续默认返回行为
-
-//     if (条件) {
-//       // 执行一些操作
-//       return true;
-//     } else {
-//       return false;
-//     }
-//   }
 
 const zoomedOut = ref(false);
 const zoomedHeight = ref(0);
+
+const startX = ref('');
+const deltaX = ref('');
 
 const toggleZoom = () => {
   zoomedOut.value = !zoomedOut.value;
@@ -65,6 +57,7 @@ function changeDate(params) {
   console.log(`params`, params);
   params.select = !params.select;
 }
+
 function onSearch() {
   uni.navigateTo({ url: '/pages/searchDetails/searchDetails' });
 }
@@ -85,17 +78,18 @@ function itemclick(e) {
   });
   e.checkbox = true;
 }
-const startX = ref('');
-const deltaX = ref('');
+
 function touchStart(event) {
   // 记录触摸起始点的横坐标
   startX.value = event.touches[0].clientX;
 }
+
 function touchMove(event) {
   // 计算滑动距离
   const currentX = event.touches[0].clientX;
   deltaX.value = currentX - startX.value;
 }
+
 function touchEnd() {
   // 判断滑动方向
   if (deltaX.value > 50) {
@@ -116,7 +110,68 @@ function touchEnd() {
   // 清除触摸起始点记录，这里也可以写一些比较复杂的逻辑，每滑动一次松后执行。
 }
 
-onMounted(() => {
+function logout() {
+  setCurrent();
+  uni.clearStorage();
+  const userToken = uni.getStorageSync('token');
+  if (!userToken) {
+    uni.redirectTo({ url: '/pages/loginOrSignup/loginOrSignup' });
+  }
+}
+function add() {
+  uni.navigateTo({ url: '/pages/scanCode/scanCode' });
+}
+// #endregion
+
+function getLockLisit() {
+  apiLockListCtrlList()
+    .then((res) => {
+      console.log(`res.rows.length`, res.rows.length);
+      if (res.rows.length === 0) {
+        isShow.value = true;
+      } else {
+        doorLockList.value = res.rows.map((item, index) => {
+          return {
+            checkbox: index === 0,
+            name: item.locktxt,
+            ...item
+          };
+        });
+
+        getDoorUserLogCtrlList();
+        isShow.value = false;
+      }
+      setTimeout(() => {
+        loading.value = false;
+      }, 1000);
+    })
+    .catch((err) => {
+      console.log(`err====`, err);
+      loading.value = false;
+    });
+}
+function getDoorUserLogCtrlList() {
+  const id = doorLockList.value.filter((el) => el.checkbox)[0].id;
+  console.log(
+    `doorLockList.value.filter((el) => el.checkbox)`,
+    doorLockList.value.filter((el) => el.checkbox)
+  );
+  apiDoorUserLogCtrl({
+    deviceid: id,
+    todoTypeStr: '1,2,3'
+  })
+    .then((res) => {
+      console.log(`res===`, res);
+    })
+    .catch((err) => {
+      console.log(`err====`, err);
+    });
+}
+
+onMounted(async () => {
+  loading.value = true;
+  console.log(`loading`, loading);
+  // #region
   uni.hideTabBar();
   uni.removeStorageSync('selectedIndex');
   // 获取页面宽度
@@ -151,12 +206,18 @@ onMounted(() => {
     textTop.value = 70;
     zoomedHeight.value = 90;
   }
+  // #endregion
+  getLockLisit();
+  uni.$on('addDoorLockSuccess', function () {
+    getLockLisit();
+  });
 });
 </script>
 
 <template>
+  <nut-loading-page v-if="loading" :loading="loading" />
   <view
-    v-if="!isShow"
+    v-else-if="!isShow"
     class="homePageMain"
     @touchstart="touchStart"
     @touchmove="touchMove"
@@ -374,6 +435,34 @@ onMounted(() => {
       </div>
     </nut-popup>
   </view>
+  <LayoutDefault
+    v-else
+    title="添加门锁"
+    background="none"
+    :full="true"
+    class="addDoorLock"
+  >
+    <template #right>
+      <div text="14px" @click="logout">退出登录</div>
+    </template>
+    <div w="100%" flex justify-center>
+      <div w-240px pt-60px>
+        <div text="14px #333" pb-200px>
+          请添加一把门锁吧，在这里您可以管理 您的房屋，让您的生活变得更便捷、更
+          智能、更安全。
+        </div>
+        <div flex justify-center items-center>
+          <div
+            i-ri-add-circle-fill
+            w-130px
+            h-130px
+            text="#14A83B"
+            @click="add"
+          ></div>
+        </div>
+      </div>
+    </div>
+  </LayoutDefault>
 </template>
 
 <style lang="scss">
@@ -400,7 +489,12 @@ onMounted(() => {
   background-color: #fff;
   transition: transform 0.5s;
 }
-
+.addDoorLock {
+  height: 100%;
+  background-image: url(/static/images/bg@3x.png);
+  background-size: cover;
+  background-position: center;
+}
 .zoom-out1 {
   z-index: 999;
   // width: 80%;

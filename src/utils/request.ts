@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { forward } from './router';
 import env from '@/config/env';
 import { hideLoading, showLoading } from '@/config/serviceLoading';
@@ -36,6 +37,7 @@ function baseRequest(
   url: string,
   data: { isLoading: any }
 ) {
+  console.log(`url`, url);
   return new Promise((resolve, reject) => {
     showLoading(data.isLoading);
     delete data.isLoading;
@@ -46,25 +48,33 @@ function baseRequest(
       timeout: 20000,
       header: {
         'content-type': 'application/json;',
-        token: uni.getStorageSync('token')
-        // 'content-type':
-        // method === 'GET'
-        //   ? 'application/json; charset=utf-8'
-        //   : 'application/x-www-form-urlencoded'
+        Authorization: uni.getStorageSync('token')
       },
       data,
       success: (res: any) => {
-        console.log(`res`, res);
         if (res.statusCode >= 200 && res.statusCode < 400) {
-          if (res.data.code !== 500) {
+          if (res.data.code === 200) {
             responseDate = res.data;
+            consoleRes(
+              dayjs().format('YYYY-MM-DD HH:mm:ss'),
+              url,
+              responseDate
+            );
             resolve(responseDate);
           } else {
-            reject(res.data);
-            rejectMessage({
-              errno: res.data.code,
-              errmsg: res.data.msg // Use the appropriate property for error message
-            });
+            if (res.data.code === 401) {
+              rejectMessage({
+                errno: res.data.code,
+                errmsg: '令牌失效，请重新登陆'
+              });
+              forward('login');
+            } else {
+              reject(res.data);
+              rejectMessage({
+                errno: res.data.code,
+                errmsg: res.data.msg
+              });
+            }
           }
         } else {
           reject(res.data);
@@ -80,9 +90,7 @@ function baseRequest(
           errmsg: '网络不给力，请检查你的网络设置~'
         });
       },
-      complete: (data) => {
-        // console.log(data, 'data');
-        // resolve(responseDate);
+      complete: () => {
         hideLoading();
       }
     });
@@ -101,5 +109,17 @@ const http = {
       ...params
     }) as Http.Response<T>
 };
+
+export function consoleRes(time: string, className: string, res: any) {
+  // setTimeout(() => {
+  console.log(
+    `%c${`${className}`} (%c${200}%c)`,
+    'font-weight:bold',
+    'color:#67C23A;font-weight:bold',
+    'font-weight:bold',
+    JSON.parse(JSON.stringify(res))
+  );
+  // }, 0)
+}
 
 export default http;

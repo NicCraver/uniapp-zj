@@ -24,38 +24,14 @@ function signup() {
     <view class="login-sign-bg">
       <view h="100%" flex flex-col justify-center>
         <view>
-          <button
-            w="80%"
-            h-40px
-            bg="#14A83B"
-            color="#fff"
-            text="16px"
-            rounded="20px"
-            @click="login"
-          >
-            登录
-          </button>
+          <Nbutton @click="login"> 登录 </Nbutton>
         </view>
-        <view text="20px #fff" py-10px>or</view>
+        <view text="20px #fff" py-20px>or</view>
         <view>
-          <button
-            w="80%"
-            h-40px
-            bg="#0FBFA4"
-            color="#fff"
-            text="16px"
-            rounded="20px"
-            @click="signup"
-          >
-            注册
-          </button>
+          <Nbutton bg="#0FBFA4" @click="signup"> 注册 </Nbutton>
         </view>
       </view>
     </view>
-    <!-- <view h="100%">
-
-
-    </view> -->
   </view>
 </template>
 

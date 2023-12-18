@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ToastInst } from 'nutui-uniapp';
-import { forward } from '@/utils/router';
+
+const { setUserInfo, setToken } = useStore('root');
 
 const toastRef = ref<ToastInst>();
 
@@ -21,8 +22,25 @@ const isLoading = ref(false);
 const safeAreaInsetTop = ref(true);
 
 function sendVerificationCode() {
+  if (state.account === '' || state.account.length !== 11) {
+    toastRef.value?.showToast.fail('请填写完整的手机号码', {
+      duration: 800
+    });
+    return;
+  }
   if (state.countdown > 0) return; // 防止重复点击
-
+  apiSendCodeNew({ phoneNumber: state.account })
+    .then((res) => {
+      console.log(`res===`, res);
+      uni.showToast({
+        title: '验证码已发送',
+        icon: 'success',
+        duration: 800
+      });
+    })
+    .catch((err) => {
+      console.log(`err====`, err);
+    });
   state.countdown = 60;
   state.timer = setInterval(() => {
     state.countdown -= 1;
@@ -33,21 +51,63 @@ function sendVerificationCode() {
 }
 
 async function login() {
+  if (!state.checkbox) {
+    toastRef.value?.showToast.fail('请同意并勾选协议', { duration: 1200 });
+    return;
+  }
   if (isLoading.value) {
     return;
   }
   isLoading.value = true;
   if (checkPassword()) {
-    toastRef.value?.showToast.success('登陆成功', {
-      duration: 800
-    });
-    setTimeout(() => {
-      // 存储token
-      uni.setStorageSync('token', '123456');
-      forward('index');
-      isLoading.value = false;
-      toastRef.value?.hideToast();
-    }, 800);
+    apiRegUser({
+      phoneNumber: state.account,
+      code: state.code,
+      pws: state.passWord
+    })
+      .then((res) => {
+        console.log(`res===`, res);
+        apiLogin({
+          username: state.account,
+          password: state.passWord
+        })
+          .then((res: any) => {
+            console.log(`res===`, res);
+            uni.setStorageSync('token', res.token);
+            setToken(res.token);
+            apiGetInfo()
+              .then((res: any) => {
+                console.log(`res===`, res);
+                setUserInfo({
+                  ...res.user,
+                  permissions: res.permissions,
+                  roles: res.roles
+                });
+                toastRef.value?.showToast.success('注册成功，自动登录。', {
+                  duration: 800
+                });
+                setTimeout(() => {
+                  forward('index');
+                }, 800);
+                isLoading.value = false;
+              })
+              .catch((err) => {
+                console.log(`err====`, err);
+                isLoading.value = false;
+              });
+          })
+          .catch((err) => {
+            console.log(`err====`, err);
+            isLoading.value = false;
+          });
+      })
+      .catch((err) => {
+        console.log(`err====`, err);
+      })
+      .finally(() => {
+        isLoading.value = false;
+        toastRef.value?.hideToast();
+      });
   } else {
     setTimeout(() => {
       toastRef.value?.hideToast();
@@ -80,9 +140,6 @@ function checkPassword() {
   }
 }
 
-function goBlack() {
-  uni.navigateBack();
-}
 function goProtocolo() {
   uni.navigateTo({
     url: '/pages/protocol/protocol'
@@ -172,18 +229,9 @@ onMounted(() => {
         </div>
       </div>
       <div pt-40px px-20px>
-        <button
-          w="100%"
-          h-40px
-          bg="#14A83B"
-          color="#fff"
-          text="16px"
-          rounded="20px"
-          :loading="isLoading"
-          @click="login"
-        >
+        <Nbutton mt-40px :loading="isLoading" w="100%" @click="login">
           注册
-        </button>
+        </Nbutton>
       </div>
     </div>
     <nut-popup

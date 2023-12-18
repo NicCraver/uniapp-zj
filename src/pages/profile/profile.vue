@@ -13,6 +13,14 @@ function onCancel() {
 }
 function onOk() {
   console.log('确定');
+  apiDoorUserCtrlDelMySelf()
+    .then((res) => {
+      console.log(`res===`, res);
+      logout();
+    })
+    .catch((err) => {
+      console.log(`err====`, err);
+    });
 }
 
 function logout() {
@@ -63,18 +71,7 @@ onMounted(() => {
         @ok="onOk"
       />
     </div>
-    <button
-      mt-40px
-      w="90%"
-      h-40px
-      bg="#14A83B"
-      color="#fff"
-      text="16px"
-      rounded="20px"
-      @click="logout"
-    >
-      退出登录
-    </button>
+    <Nbutton mt-40px @click="logout"> 退出登录 </Nbutton>
   </LayoutTabbar>
 </template>
 

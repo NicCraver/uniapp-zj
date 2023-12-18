@@ -5,6 +5,7 @@
 import type { AutoToRefs, ToRef } from 'vue'
 
 import appStore from '@/store/app'
+import rootStore from '@/store/root'
 import setupStore from '@/store/setup'
 import tabbarStore from '@/store/tabbar'
 import testStore from '@/store/test'
@@ -20,6 +21,7 @@ declare module 'vue' {
 
 const storeExports = {
   app: appStore,
+  root: rootStore,
   setup: setupStore,
   tabbar: tabbarStore,
   test: testStore,

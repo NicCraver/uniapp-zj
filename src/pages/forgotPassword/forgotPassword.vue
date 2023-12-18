@@ -22,8 +22,26 @@ const isLoading = ref(false);
 const safeAreaInsetTop = ref(true);
 
 function sendVerificationCode() {
+  console.log(`state.account`, state.account);
+  if (state.account === '' || state.account.length !== 11) {
+    toastRef.value?.showToast.fail('请填写完整的手机号码', {
+      duration: 800
+    });
+    return;
+  }
   if (state.countdown > 0) return; // 防止重复点击
-
+  apiSendCodeOld({ phoneNumber: state.account })
+    .then((res) => {
+      console.log(`res===`, res);
+      uni.showToast({
+        title: '验证码已发送',
+        icon: 'success',
+        duration: 800
+      });
+    })
+    .catch((err) => {
+      console.log(`err====`, err);
+    });
   state.countdown = 60;
   state.timer = setInterval(() => {
     state.countdown -= 1;
@@ -39,16 +57,33 @@ async function SubmitModifications() {
   }
   isLoading.value = true;
   if (checkPassword()) {
-    toastRef.value?.showToast.success('修改成功', {
-      duration: 800
-    });
-    setTimeout(() => {
-      // 存储token
-      uni.setStorageSync('token', '123456');
-      uni.navigateBack();
-      isLoading.value = false;
-      toastRef.value?.hideToast();
-    }, 800);
+    apiRestPws({
+      phoneNumber: state.account,
+      code: state.code,
+      pws: state.passWord
+    })
+      .then((res) => {
+        console.log(`res===`, res);
+        toastRef.value?.showToast.success('修改成功', {
+          duration: 800
+        });
+        setTimeout(() => {
+          uni.navigateBack();
+          isLoading.value = false;
+        }, 800);
+      })
+      .catch((err) => {
+        console.log(`err====`, err);
+        isLoading.value = false;
+      });
+
+    // setTimeout(() => {
+    //   // 存储token
+    //   uni.setStorageSync('token', '123456');
+    //   uni.navigateBack();
+    //   isLoading.value = false;
+    //   toastRef.value?.hideToast();
+    // }, 800);
   } else {
     setTimeout(() => {
       toastRef.value?.hideToast();
@@ -94,11 +129,11 @@ function checkPassword() {
   }
 }
 
-function goProtocolo() {
-  uni.navigateTo({
-    url: '/pages/protocol/protocol'
-  });
-}
+// function goProtocolo() {
+//   uni.navigateTo({
+//     url: '/pages/protocol/protocol'
+//   });
+// }
 
 onMounted(() => {
   if (isH5()) {
@@ -187,8 +222,10 @@ onMounted(() => {
       </div>
 
       <div pt-40px px-20px>
-        <button
+        <div
           w="100%"
+          lh-40px
+          text-center
           h-40px
           bg="#14A83B"
           color="#fff"
@@ -198,7 +235,7 @@ onMounted(() => {
           @click="SubmitModifications"
         >
           提交修改
-        </button>
+        </div>
       </div>
     </div>
   </div>
