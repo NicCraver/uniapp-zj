@@ -5,6 +5,7 @@ export * from './useRoutingListening';
 export * from './useSystemInfo';
 export * from './useAddLock';
 export * from './useListHeight';
+export * from './useGetUserInfo';
 
 export function onUrlPage(e: any) {
   if (isFastClick()) return;

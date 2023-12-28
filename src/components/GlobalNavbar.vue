@@ -6,7 +6,7 @@ defineProps({
     default: '#fff'
   }
 });
-const statusBarHeight = ref<any>(uni.getSystemInfoSync().statusBarHeight);
+const { statusBarHeight } = useStore('root');
 const h5Height = ref(0);
 onMounted(() => {
   if (isH5()) {

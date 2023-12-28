@@ -1,4 +1,5 @@
 export function useListHeight() {
-  const height = uni.getSystemInfoSync().windowHeight;
+  const { windowHeight } = useStore('root');
+  const height = windowHeight;
   return height;
 }

@@ -7,7 +7,6 @@ onMounted(() => {
       .select('.global-navbar')
       .boundingClientRect(function (rect) {
         if (rect) {
-          console.log(rect.height); // 元素的高度
           listHeight.value = useListHeight() - rect.height - 10;
         }
       })

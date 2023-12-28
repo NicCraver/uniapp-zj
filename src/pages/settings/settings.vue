@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-const doorLockName = ref('挚家');
+const { lockInfo } = useStore('root');
+// const doorLockName = ref('挚家');
 const doorLockVersion = ref('V1.1.1');
 function goPage(params) {
   uni.navigateTo({ url: `/pages/settingPages/${params}` });
@@ -20,17 +21,17 @@ onMounted(() => {
       <nut-cell-group>
         <nut-cell>
           <template #title>
-            <div text="#333">门锁类型：{{ '果丁智能' }}</div>
+            <div text="#333">门锁类型：{{ lockInfo.locktxt }}</div>
           </template>
         </nut-cell>
         <nut-cell>
           <template #title>
-            <div text="#333">门锁编号：{{ '222222222141212512' }}</div>
+            <div text="#333">门锁编号：{{ lockInfo.id }}</div>
           </template>
         </nut-cell>
         <nut-cell is-link @click="goPage('doorLockRoom')">
           <template #title>
-            <div text="#333">门锁名称：{{ doorLockName }}</div>
+            <div text="#333">门锁名称：{{ lockInfo.name }}</div>
           </template>
         </nut-cell>
       </nut-cell-group>
@@ -53,7 +54,7 @@ onMounted(() => {
   </LayoutTabbar>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 page {
   background: #efefef;
 }

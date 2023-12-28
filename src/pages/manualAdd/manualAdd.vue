@@ -6,9 +6,7 @@ onLoad((query: any) => {
 
 function getLockTypes() {
   apiGetLockTypes()
-    .then((res) => {
-      console.log(`res===`, res);
-    })
+    .then((res) => {})
     .catch((err) => {
       console.log(`err====`, err);
     });
@@ -21,7 +19,6 @@ function bindingDoorLock() {
       deviceid: result.value
     })
       .then((res) => {
-        console.log(`res===`, res);
         uni.showToast({
           title: '绑定成功',
           icon: 'success',

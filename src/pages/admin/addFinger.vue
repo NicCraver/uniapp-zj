@@ -1,19 +1,19 @@
 <script setup>
-const toastRef = ref();
-const result = ref('');
-onLoad((query) => {
-  result.value = query.result;
-});
+// const toastRef = ref();
+// const result = ref('');
+// onLoad((query) => {
+//   result.value = query.result;
+// });
 
-const state = reactive({
-  password: ''
-});
+// const state = reactive({
+//   password: ''
+// });
 
-const submit = () => {
-  if (!state.password) {
-    console.log(`state.password`, state.password);
-  }
-};
+// const submit = () => {
+//   if (!state.password) {
+//     console.log(`state.password`, state.password);
+//   }
+// };
 function goBack() {
   toastRef.value?.showToast.success('修改成功', {
     duration: 800
@@ -47,7 +47,7 @@ function goBack() {
         color="#fff"
         text="16px"
         rounded="20px"
-        @click="submit"
+        @click="goBack"
       >
         添加指纹
       </button>

@@ -11,7 +11,7 @@ defineProps({
   }
 });
 
-const statusBarHeight = ref<any>(uni.getSystemInfoSync().statusBarHeight);
+const { statusBarHeight } = useStore('root');
 const h5Height = ref(0);
 const navbar = ref<any>(null);
 const navbarHeight = ref(0);
@@ -25,7 +25,6 @@ onMounted(() => {
       .select('.global-navbar')
       .boundingClientRect(function (rect: any) {
         if (rect) {
-          console.log(rect.height); // 元素的高度
           navbarHeight.value = rect.height;
         }
       })

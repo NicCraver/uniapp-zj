@@ -2,15 +2,15 @@
 const result = ref('');
 
 const formData = reactive({
-  name: '',
-  tel: ''
+  nickName: '',
+  phoneNumber: ''
 });
 
 onLoad((query: any) => {
   result.value = query.result;
   console.log(`query`, query);
-  formData.name = query.name;
-  formData.tel = query.tel;
+  formData.nickName = query.nickName;
+  formData.phoneNumber = query.phoneNumber;
 });
 
 const ruleForm = ref<any>(null);
@@ -49,12 +49,12 @@ onMounted(() => {
         ref="ruleForm"
         :model-value="formData"
         :rules="{
-          name: [{ required: true, message: '请填写姓名' }]
+          nickName: [{ required: true, message: '请填写姓名' }]
         }"
       >
-        <nut-form-item label="管理员姓名" prop="name">
+        <nut-form-item label="管理员姓名" prop="nickName">
           <nut-input
-            v-model="formData.name"
+            v-model="formData.nickName"
             class="nut-input-text"
             placeholder="请输入姓名"
             type="text"
@@ -62,7 +62,7 @@ onMounted(() => {
         </nut-form-item>
 
         <nut-input
-          v-model="formData.tel"
+          v-model="formData.phoneNumber"
           class="nut-input-text"
           placeholder="请输入11位手机号码"
           type="text"

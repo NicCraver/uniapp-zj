@@ -1,35 +1,45 @@
 <script setup>
-const visible1 = ref(true);
-
-const onCancel = () => {
-  uni.navigateBack({ delta: 1 });
-};
-const onOk = () => {
-  console.log('event ok');
-  uni.showToast({
-    title: '操作成功',
-    icon: 'success',
-    mask: true
+const unlockingStatus = ref(false);
+function goBack() {
+  uni.navigateBack({
+    delta: 1
   });
-  setTimeout(() => {
-    uni.navigateBack({ delta: 1 });
-  }, 300);
-};
+}
+function unlocking() {
+  if (!unlockingStatus.value) {
+    console.log(`远程开锁中,调接口`);
+  } else {
+    console.log(`开锁完成`);
+  }
+}
 </script>
 
 <template>
-  <LayoutDefault title="远程开锁">
+  <LayoutDefault title="远程开锁" bg="#fff">
     <template #left>
-      <Black text="#262727" font-bold />
+      <div
+        i-material-symbols-arrow-back-ios-new
+        text="#000"
+        @click="goBack()"
+      ></div>
     </template>
-    <div h="100%">
-      <nut-dialog
-        v-model:visible="visible1"
-        title="温馨提示"
-        content="进行远程开锁时，需要在锁跟前手动输入“*”和“0”后，听到提示音已开锁后，开锁成功。 "
-        @cancel="onCancel"
-        @ok="onOk"
-      />
+    <div h-10px bg="#EFEFEF"></div>
+    <div>
+      <image w="100%" h-400px src="/static/images/image@2x222.png" />
+      <div text-center text="24px #333" font-bold mt-20px>远程开锁</div>
+      <div text-center text="12px #666" mt-10px>请按上述步骤完成远程开锁</div>
+      <button
+        mt-20px
+        w="90%"
+        h-40px
+        bg="#14A83B"
+        color="#fff"
+        text="16px"
+        rounded="20px"
+        @click="unlocking"
+      >
+        {{ unlockingStatus ? '开锁完成' : '远程开锁' }}
+      </button>
     </div>
   </LayoutDefault>
 </template>

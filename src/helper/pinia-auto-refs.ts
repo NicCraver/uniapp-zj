@@ -4,7 +4,6 @@
 // @ts-nocheck
 import type { AutoToRefs, ToRef } from 'vue'
 
-import appStore from '@/store/app'
 import rootStore from '@/store/root'
 import setupStore from '@/store/setup'
 import tabbarStore from '@/store/tabbar'
@@ -20,7 +19,6 @@ declare module 'vue' {
 }
 
 const storeExports = {
-  app: appStore,
   root: rootStore,
   setup: setupStore,
   tabbar: tabbarStore,

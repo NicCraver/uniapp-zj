@@ -8,7 +8,9 @@ import 'dayjs/locale/zh-cn'; // 导入中文语言包
 
 dayjs.locale('zh-cn');
 export function createApp() {
-  const app = createSSRApp(App).use(store);
+  // const Pinia = store;
+  const app = createSSRApp(App);
+  app.use(store);
   return {
     app
   };

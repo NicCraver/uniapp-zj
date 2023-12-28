@@ -1,14 +1,13 @@
 <script setup>
 const formData = reactive({
-  name: '',
-  tel: ''
+  nickName: '',
+  phoneNumber: ''
 });
 
 onLoad((query) => {
-  formData.name = query.name;
-  formData.tel = query.tel;
+  formData.nickName = query.nickName;
+  formData.phoneNumber = query.phoneNumber;
 });
-
 function list() {
   console.log(`1111111111`, 1111111111);
 }
@@ -33,7 +32,7 @@ onMounted(() => {
     </template>
     <div mt-10px>
       <nut-input
-        v-model="formData.name"
+        v-model="formData.nickName"
         class="nut-input-text"
         placeholder="请输入姓名"
         readonly
@@ -41,7 +40,7 @@ onMounted(() => {
       />
 
       <nut-input
-        v-model="formData.tel"
+        v-model="formData.phoneNumber"
         class="nut-input-text"
         placeholder="请输入11位手机号码"
         type="text"

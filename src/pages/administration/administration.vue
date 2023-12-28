@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const { userInfo, lockInfo, windowHeight } = useStore('root');
+
 const administrationHeaderHeight = ref(0);
 const currentTab = ref('members');
 // const currentTab = ref('authorization');
@@ -22,33 +24,77 @@ function goMembersDetail(isAdmin, params: any) {
   uni.navigateTo({
     url: `${
       isAdmin ? '/pages/admin/adminDetail' : '/pages/admin/memberDetail'
-    }?name=${params.name}&tel=${params.tel}`
+    }?nickName=${params.nickName}&phoneNumber=${params.phoneNumber}`
   });
 }
 
 const count = ref(new Array(100).fill(0));
 const listHeight = ref(0);
+
+const memberList = ref<any>([]);
+const memberList2 = ref<any>([]);
+function getLockRoleCtrlList() {
+  apiLockRoleCtrl({
+    lockId: lockInfo.value.id,
+    phoneNumber: userInfo.value.phonenumber,
+    userType: '02',
+    pageNum: 1,
+    pageSize: 999
+  })
+    .then((res: any) => {
+      memberList.value = res.rows;
+      memberList.value.unshift({
+        ...userInfo.value,
+        phoneNumber: userInfo.value.phonenumber
+      });
+      console.log(`memberList.value`, memberList.value);
+    })
+    .catch((err) => {
+      console.log(`err====`, err);
+    });
+}
+// apiUserCtrlList
+function getLockUserCtrlList() {
+  apiUserCtrlList({
+    lockId: lockInfo.value.id
+  })
+    .then((res: any) => {
+      memberList2.value = res.rows;
+      memberList2.value.unshift({
+        ...userInfo.value,
+        phoneNumber: userInfo.value.phonenumber
+      });
+    })
+    .catch();
+}
 onMounted(() => {
+  uni.$on('updateMemberList', function () {
+    getLockRoleCtrlList();
+    getLockUserCtrlList();
+  });
   count.value = count.value.map((item: number, index: number) => index + 1);
   uni
     .createSelectorQuery()
     .select('.administrationHeader')
     .boundingClientRect(function (rect: any) {
+      console.log(`rect`, rect);
       if (rect) {
-        console.log(rect.height); // 元素的高度
         administrationHeaderHeight.value = rect.height;
         listHeight.value =
-          useListHeight() - rect.height - tableHeight.value - 20;
+          windowHeight.value - rect.height - tableHeight.value - 30;
+        console.log(`listHeight.value`, listHeight.value);
       }
     })
     .exec();
+  getLockRoleCtrlList();
+  getLockUserCtrlList();
 });
 </script>
 
 <template>
-  <LayoutTabbar>
-    <header class="administrationHeader" bg="#fff">
-      <div flex justify-center rounded="20px">
+  <LayoutTabbar bg="#fff">
+    <header class="administrationHeader" bg="#fff" pb-20px>
+      <div v-if="userInfo.userType === '02'" flex justify-center rounded="20px">
         <div class="tab-header" flex>
           <div
             :class="{ active: currentTab === 'members' }"
@@ -66,7 +112,19 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <div flex justify-between items-center px-15px pt-44px pb-20px>
+      <div v-else flex justify-center>
+        <div class="tab-header">
+          <div class="active" rounded="20px" text-center>成员</div>
+        </div>
+      </div>
+      <div
+        v-if="userInfo.userType === '02'"
+        flex
+        justify-between
+        items-center
+        px-15px
+        pt-44px
+      >
         <div>
           <div text="18px" font-bold>
             {{ currentTab === 'members' ? '管理成员' : '管理临时权限' }}
@@ -88,16 +146,13 @@ onMounted(() => {
         ></div>
       </div>
     </header>
-    <div
-      :style="{
-        height: `calc(100vh - ${
-          administrationHeaderHeight + tableHeight + 10
-        }px)`
-      }"
-      pb-20px
-    >
-      <main v-if="currentTab === 'members'" mt-10px>
+    <div h-10px bg="#efefef"></div>
+
+    <main v-if="currentTab === 'members'">
+      <scroll-view scroll-y :style="{ height: `${listHeight}px` }" bg="#fff">
         <div
+          v-for="v in memberList"
+          :key="v.phoneNumber"
           mb-10px
           bg="#fff"
           flex
@@ -105,15 +160,15 @@ onMounted(() => {
           items-center
           px-15px
           py-10px
-          @click="goMembersDetail(true, { name: '管理员', tel: '1234567890' })"
+          @click="goMembersDetail(v.userType === '02', v)"
         >
           <div>
-            <div pb-10px text="14px #333">管理员</div>
-            <div text="12px #333">账号：18999782356</div>
+            <div pb-10px text="14px #333">{{ v.nickName }}</div>
+            <div text="12px #333">账号：{{ v.phoneNumber }}</div>
           </div>
           <nut-icon name="rect-right" custom-color="#ccc"></nut-icon>
         </div>
-        <div
+        <!-- <div
           bg="#fff"
           flex
           justify-between
@@ -128,50 +183,26 @@ onMounted(() => {
             <div text="12px #333">账号：18999782356</div>
           </div>
           <nut-icon name="rect-right" custom-color="#ccc"></nut-icon>
+        </div> -->
+      </scroll-view>
+    </main>
+    <main v-else pt-10px>
+      <div flex justify-between items-center bg="#fff" px-10px mb-10px h-60px>
+        <div text="14px #333">账号：18999782356</div>
+        <div text="14px #14A83B">
+          <div>2023/12/13 12时</div>
+          <div>2023/12/13 12时</div>
         </div>
-      </main>
-      <main v-else pt-10px>
-        <nut-list
-          :height="60"
-          :list-data="count"
-          :container-height="listHeight"
-        >
-          <template #default="{ item, index }">
-            <div
-              flex
-              justify-between
-              items-center
-              bg="#fff"
-              px-10px
-              mb-10px
-              h-60px
-            >
-              <div text="14px #333">账号：18999782356</div>
-              <div text="14px #14A83B">
-                <div>2023/12/13 12时</div>
-                <div>2023/12/13 12时</div>
-              </div>
-            </div>
-            <div
-              flex
-              justify-between
-              items-center
-              bg="#fff"
-              px-10px
-              mb-10px
-              h-60px
-            >
-              <div text="14px #333">账号：18999782356</div>
-              <div text="14px #333">已失效</div>
-            </div>
-          </template>
-        </nut-list>
-      </main>
-    </div>
+      </div>
+      <div flex justify-between items-center bg="#fff" px-10px mb-10px h-60px>
+        <div text="14px #333">账号：18999782356</div>
+        <div text="14px #333">已失效</div>
+      </div>
+    </main>
   </LayoutTabbar>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .tab-header {
   border-radius: 20px;
   border: 1px solid #14a83b;

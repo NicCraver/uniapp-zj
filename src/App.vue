@@ -1,33 +1,29 @@
 <script setup lang="ts">
 import { onHide, onLaunch, onShow } from '@dcloudio/uni-app';
-onLaunch(() => {
-  console.log('App Launch');
-  uni.hideTabBar();
+const { setSystem } = useStore('root');
+onLaunch(() => {});
+
+onShow(async () => {});
+onHide(() => {});
+onMounted(async () => {
+  // uni.clearStorage();
+
+  // uni.setStorageSync('token', 123);
+  // useHasToken();
+  await getSystemInfo();
+  uni.hideTabBar({
+    success: () => {},
+    fail: () => {}
+  });
   uni.removeStorageSync('selectedIndex');
 });
 
-onShow(async () => {});
-onHide(() => {
-  console.log('App Hide');
-});
-onMounted(() => {
-  console.log('App Show');
-  // uni.clearStorageSync();
-  const userToken = uni.getStorageSync('token');
-  // uni.switchTab({ url: '/pages/administration/administration' });
-  // uni.redirectTo({ url: '/pages/admin/addTempAuth' });
-  if (!userToken) {
-    // uni.showToast({
-    //   title: '请重新登录',
-    //   icon: 'none'
-    // });
-    // reLaunch防止登录页出现返回操作
-    uni.redirectTo({ url: '/pages/loginOrSignup/loginOrSignup' });
-    // uni.redirectTo({ url: '/pages/login/login' });
-    // uni.redirectTo({ url: '/pages/forgotPassword/forgotPassword' });
-    // uni.switchTab({ url: '/pages/index/index' });
-  }
-});
+async function getSystemInfo() {
+  const systemInfo = await uni.getSystemInfo();
+  console.log(`systemInfo`, systemInfo);
+  const { statusBarHeight, windowHeight, platform, windowWidth } = systemInfo;
+  setSystem(statusBarHeight, windowHeight, platform, windowWidth);
+}
 </script>
 
 <style lang="scss">

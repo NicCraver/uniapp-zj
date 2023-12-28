@@ -1,3 +1,4 @@
+import { defineStore } from 'pinia';
 export default defineStore({
   id: 'tabbar',
   state: () => {
@@ -63,7 +64,6 @@ export default defineStore({
     tabbarSwitch(index, hump, pagePath, verify) {
       if (verify) {
         this.current = index;
-        console.log(`hump`, hump);
         if (hump) {
           uni.navigateTo({ url: pagePath });
         } else {
@@ -71,13 +71,6 @@ export default defineStore({
             url: pagePath
           });
         }
-      } else {
-        this.$emit('click', {
-          index,
-          hump,
-          pagePath,
-          verify
-        });
       }
     }
   }

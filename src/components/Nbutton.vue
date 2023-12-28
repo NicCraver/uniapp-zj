@@ -3,21 +3,25 @@ defineProps({
   isLoading: {
     type: Boolean,
     default: false
+  },
+  bgColor: {
+    type: String,
+    default: '#14A83B'
   }
 });
 </script>
 
 <template>
   <button
+    :style="{ backgroundColor: bgColor }"
     :loading="isLoading"
     w="90%"
     lh-40px
     text-center
     h-40px
-    bg="#14A83B"
     color="#fff"
     text="16px"
-    rounded="20px"
+    rd="20px"
   >
     <slot />
   </button>

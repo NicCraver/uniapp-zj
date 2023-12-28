@@ -3,29 +3,19 @@ import dayjs from 'dayjs';
 // #ifdef APP-PLUS
 import { nativeContact } from '@/utils/nativeContact';
 // #endif
+const { lockInfo } = useStore('root');
 const result = ref('');
 onLoad((query) => {
   result.value = query.result;
 });
 const formData = reactive({
   name: '',
-  tel: '',
-  startingTime: null,
-  expirationTime: null
+  phoneNumber: '',
+  startTime: null,
+  endTime: null
 });
 
 const ruleForm = ref(null);
-const submit = () => {
-  ruleForm.value.validate().then(({ valid, errors }) => {
-    if (valid) console.log('success', formData);
-    else console.log('error submit!!', errors);
-  });
-};
-
-const reset = () => {
-  ruleForm.value.reset();
-};
-
 const showStart = ref(false);
 const showEnd = ref(false);
 
@@ -63,14 +53,14 @@ const confirm = ({ selectedValue }) => {
   console.log(`selectedValue`, selectedValue);
   const date = selectedValue.slice(0, 3).join('-');
   const time = selectedValue.slice(3).join(':');
-  formData.startingTime = `${date} ${time}`;
+  formData.startTime = `${date} ${time}`;
   showStart.value = false;
 };
 function confirm2({ selectedValue }) {
   console.log(`selectedValue`, selectedValue);
   const date = selectedValue.slice(0, 3).join('-');
   const time = selectedValue.slice(3).join(':');
-  formData.expirationTime = `${date} ${time}`;
+  formData.endTime = `${date} ${time}`;
   showEnd.value = false;
 }
 function open() {
@@ -82,7 +72,7 @@ function open() {
   showStart.value = true;
 }
 function open2() {
-  if (!formData.startingTime) {
+  if (!formData.startTime) {
     uni.showToast({
       title: '请先选择起始时间',
       icon: 'none'
@@ -122,11 +112,40 @@ function openAddressBook() {
     } else {
       console.log('name', name, phoneNumber);
       formData.name = name;
-      formData.tel = phoneNumber;
+      formData.phoneNumber = phoneNumber;
     }
   });
   // #endif
 }
+
+const submit = () => {
+  ruleForm.value.validate().then(({ valid, errors }) => {
+    if (valid) {
+      console.log('success', formData);
+      apiLsUserCtrlAddUser({
+        lockId: lockInfo.value.id,
+        phoneNumber: formData.phoneNumber,
+        startTime: formData.startTime,
+        endTime: formData.endTime
+      })
+        .then((res) => {
+          console.log(`res===`, res);
+          uni.showToast({
+            title: '添加成功',
+            icon: 'success'
+          });
+          uni.$emit('updateMemberList', { listData: 1 });
+          uni.navigateBack({
+            delta: 1
+          });
+        })
+        .catch((err) => {
+          console.log(`err====`, err);
+        });
+    } else console.log('error submit!!', errors);
+  });
+};
+
 onMounted(() => {});
 </script>
 
@@ -146,7 +165,7 @@ onMounted(() => {});
       >
         <nut-form-item
           label="手机号码"
-          prop="tel"
+          prop="phoneNumber"
           required
           :rules="[
             { required: true, message: '请填写联系电话' },
@@ -161,10 +180,11 @@ onMounted(() => {});
           ]"
         >
           <nut-input
-            v-model="formData.tel"
+            v-model="formData.phoneNumber"
             class="nut-input-text"
             placeholder="请输入11位手机号码"
             type="text"
+            max-length="11"
           >
             <!-- #ifdef APP -->
             <template #right>
@@ -174,24 +194,28 @@ onMounted(() => {});
             <!-- #endif -->
           </nut-input>
         </nut-form-item>
-        <nut-cell is-link @click="open()">
-          <template #title>
-            <div>起始时间</div>
-          </template>
-
-          <template #desc>
-            <div text="#333">{{ formData.startingTime }}</div>
-          </template>
-        </nut-cell>
-        <nut-cell is-link @click="open2()">
-          <template #title>
-            <div>失效时间</div>
-          </template>
-
-          <template #desc>
-            <div text="#333">{{ formData.expirationTime }}</div>
-          </template>
-        </nut-cell>
+        <nut-form-item
+          label="起始时间"
+          prop="startTime"
+          required
+          :rules="[{ required: true, message: '起始时间' }]"
+        >
+          <div flex justify-between items-center @click="open()">
+            <div text="#333">{{ formData.startTime }}</div>
+            <nut-icon name="rect-right" custom-color="#ccc"></nut-icon>
+          </div>
+        </nut-form-item>
+        <nut-form-item
+          label="失效时间"
+          prop="endTime"
+          required
+          :rules="[{ required: true, message: '失效时间' }]"
+        >
+          <div flex justify-between items-center @click="open2()">
+            <div text="#333">{{ formData.endTime }}</div>
+            <nut-icon name="rect-right" custom-color="#ccc"></nut-icon>
+          </div>
+        </nut-form-item>
       </nut-form>
       <button
         mt-100px

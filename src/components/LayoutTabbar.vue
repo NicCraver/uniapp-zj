@@ -2,8 +2,7 @@
 defineProps({
   title: String
 });
-
-const statusBarHeight = ref<any>(uni.getSystemInfoSync().statusBarHeight);
+const { statusBarHeight } = useStore('root');
 const h5Height = ref(0);
 const navbar = ref<any>(null);
 const tabBarRef = ref<any>(null);
@@ -13,9 +12,7 @@ onMounted(() => {
     h5Height.value = 10;
   }
   nextTick(() => {
-    console.log(`navbar.value2`, navbar.value.offsetHeight);
     navbarHeight.value = navbar.value.offsetHeight + 72;
-    console.log(`navbarHeight.value`, navbarHeight.value);
   });
 });
 </script>

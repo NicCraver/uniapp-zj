@@ -1,61 +1,132 @@
 <script setup>
-import dayjs from 'dayjs';
-// #ifdef APP-PLUS
-import { nativeContact } from '@/utils/nativeContact';
-// #endif
-
-const formData = reactive({
-  name: '',
-  age: '',
-  tel: '',
-  address: ''
+const { userInfo } = useStore('root');
+const toastRef = ref();
+const textTop = ref(20);
+const state = reactive({
+  account: '',
+  passWord: '',
+  passWord2: '',
+  code: '',
+  countdown: 0,
+  checkbox: true,
+  timer: null,
+  type: true
 });
 
-const ruleForm = ref(null);
+const isLoading = ref(false);
 
-const submit = () => {
-  ruleForm.value.validate().then(({ valid, errors }) => {
-    if (valid) console.log('success', formData);
-    else console.log('error submit!!', errors);
-  });
-};
-
-const reset = () => {
-  ruleForm.value.reset();
-};
-
-function openAddressBook() {
-  // uni.showToast({
-  //   title: '加载中',
-  //   icon: 'loading'
-  // });
-  // #ifdef MP-WEIXIN
-  wx.chooseContact({
-    success: (res) => {
-      console.log(res);
-    },
-    fail: (error) => {
-      console.log(error);
+function sendVerificationCode() {
+  console.log(`state.account`, state.account);
+  if (state.account === '' || state.account.length !== 11) {
+    toastRef.value?.showToast.fail('请填写完整的手机号码', {
+      duration: 800
+    });
+    return;
+  }
+  if (state.countdown > 0) return; // 防止重复点击
+  apiSendCodeOld({ phoneNumber: state.account })
+    .then(() => {
+      uni.showToast({
+        title: '验证码已发送',
+        icon: 'success',
+        duration: 800
+      });
+    })
+    .catch((err) => {
+      console.log(`err====`, err);
+    });
+  state.countdown = 60;
+  state.timer = setInterval(() => {
+    state.countdown -= 1;
+    if (state.countdown <= 0) {
+      clearInterval(state.timer);
     }
-  });
-  // #endif
-  // #ifdef APP-PLUS
-  console.log(`1111111111`, dayjs().format('YYYY-MM-DD HH:mm:ss'));
-  nativeContact.contacts.getContact((name, phoneNumber) => {
-    // uni.hideToast();
-    if (name === 'No contact selected') {
-      // 处理未选择联系人的错误逻辑
-      console.log('No contact selected');
-    } else {
-      console.log('name', name, phoneNumber);
-      formData.name = name;
-      formData.tel = phoneNumber;
-    }
-  });
-  // #endif
+  }, 1000);
 }
 
-onMounted(() => {});
+async function SubmitModifications() {
+  if (isLoading.value) {
+    return;
+  }
+  isLoading.value = true;
+  if (checkPassword()) {
+    apiRestPws({
+      phoneNumber: state.account,
+      code: state.code,
+      pws: state.passWord
+    })
+      .then(() => {
+        toastRef.value?.showToast.success('修改成功', {
+          duration: 800
+        });
+        setTimeout(() => {
+          isLoading.value = false;
+        }, 800);
+      })
+      .catch((err) => {
+        console.log(`err====`, err);
+        isLoading.value = false;
+      });
+
+    // setTimeout(() => {
+    //   // 存储token
+    //   uni.setStorageSync('token', '123456');
+    //   uni.navigateBack();
+    //   isLoading.value = false;
+    //   toastRef.value?.hideToast();
+    // }, 800);
+  } else {
+    setTimeout(() => {
+      toastRef.value?.hideToast();
+      isLoading.value = false;
+    }, 1000);
+  }
+}
+
+function checkPassword() {
+  let tempText = '';
+
+  if (state.account === '' || state.account.length !== 11)
+    tempText += '请填写完整的手机号码';
+  if (state.code === '')
+    tempText += tempText !== '' ? ',验证码不能为空' : '验证码不能为空';
+  if (state.passWord === '')
+    tempText += tempText !== '' ? ',密码不能为空' : '密码不能为空';
+  if (!/[A-Z]/.test(state.passWord))
+    tempText += tempText !== '' ? ',密码缺少大写字母' : '密码缺少大写字母';
+  if (!/[a-z]/.test(state.passWord))
+    tempText += tempText !== '' ? ',密码缺少小写字母' : '密码缺少小写字母';
+  if (!/[0-9]/.test(state.passWord))
+    tempText += tempText !== '' ? ',密码缺少数字' : '密码缺少数字';
+
+  if (state.passWord2 === '')
+    tempText += tempText !== '' ? ',确认密码不能为空' : '确认密码不能为空';
+  if (state.passWord !== state.passWord2)
+    tempText +=
+      tempText !== '' ? ',两次密码不同,请重新输入' : '两次密码不同,请重新输入';
+
+  if (tempText === '') {
+    return true;
+  } else {
+    console.log(`${tempText !== '' ? `${tempText}` : tempText}`);
+
+    toastRef.value?.showToast.fail(
+      `${tempText !== '' ? `${tempText}` : tempText}`,
+      {
+        duration: 1200
+      }
+    );
+    return false;
+  }
+}
+
+onMounted(() => {
+  state.account = userInfo.value.phonenumber;
+
+  if (isH5()) {
+    textTop.value += 20;
+  }
+});
 </script>
 
 <template>
@@ -64,53 +135,73 @@ onMounted(() => {});
       <Black text="#262727" />
     </template>
     <div mt-10px>
-      <nut-form
-        ref="ruleForm"
-        :model-value="formData"
-        :rules="{
-          name: [{ required: true, message: '请填写姓名' }]
-        }"
+      <nut-input
+        v-model="state.account"
+        placeholder="请输入手机号码"
+        max-length="11"
+        clearable
       >
-        <nut-form-item label="用户姓名">
-          <nut-input
-            v-model="formData.name"
-            class="nut-input-text"
-            placeholder="请输入姓名"
-            type="text"
-          />
-        </nut-form-item>
-        <nut-form-item label="新密码" prop="name">
-          <nut-input
-            v-model="formData.name"
-            class="nut-input-text"
-            placeholder="请输入新密码"
-            type="text"
-          />
-        </nut-form-item>
-        <nut-form-item label="确认密码" prop="name">
-          <nut-input
-            v-model="formData.name"
-            class="nut-input-text"
-            placeholder="请再次输入新密码"
-            type="text"
-          />
-        </nut-form-item>
-      </nut-form>
-      <div text="12px #666" pl-10px>
+        <template #left>
+          <div i-ri-user-line text="#808080"></div>
+        </template>
+      </nut-input>
+      <nut-input v-model="state.code" placeholder="请输入验证码" clearable>
+        <template #left>
+          <div i-ri-shield-check-line text="#808080"></div>
+        </template>
+        <template #right>
+          <nut-button
+            type="primary"
+            size="small"
+            @click="sendVerificationCode"
+            >{{
+              state.countdown > 0 ? `${state.countdown}秒` : '获取验证码'
+            }}</nut-button
+          >
+        </template>
+      </nut-input>
+      <nut-input
+        v-model="state.passWord"
+        placeholder="设置新密码"
+        type="password"
+        clearable
+      >
+        <template #left>
+          <div i-ri-lock-line text="#808080"></div>
+        </template>
+        <template #right> </template>
+      </nut-input>
+      <nut-input
+        v-model="state.passWord2"
+        placeholder="确认新密码"
+        type="password"
+        clearable
+      >
+        <template #left>
+          <div i-ri-lock-line text="#808080"></div>
+        </template>
+        <template #right> </template>
+      </nut-input>
+      <div text="12px #666" pl-10px mt-10px>
         密码需包含字母及数字组合（不能是纯数字）
       </div>
-      <button
-        mt-40px
-        w="90%"
-        h-40px
-        bg="#14A83B"
-        color="#fff"
-        text="16px"
-        rounded="20px"
-        @click="submit"
-      >
-        确认修改
-      </button>
+
+      <div pt-40px px-20px>
+        <div
+          w="100%"
+          lh-40px
+          text-center
+          h-40px
+          bg="#14A83B"
+          color="#fff"
+          text="16px"
+          rounded="20px"
+          :loading="isLoading"
+          @click="SubmitModifications"
+        >
+          提交修改
+        </div>
+      </div>
     </div>
   </LayoutDefault>
 </template>

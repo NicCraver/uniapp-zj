@@ -4,9 +4,8 @@ import { ref } from 'vue';
 let webView = null; // webview容器
 let barcode = null; // 扫码框
 
-const statusBarHeight = ref(uni.getSystemInfoSync().statusBarHeight);
+const { statusBarHeight, windowHeight, windowWidth } = useStore('root');
 const isFlash = ref(false); // 扫码框
-const windowWidth = ref(0);
 
 // 扫码成功回调
 function onmarked(type, result) {
@@ -27,9 +26,7 @@ function openFlash() {
 // 创建窗口和扫码控件
 function createBarcode() {
   // 【步骤1】判断有没有创建过 webview 容器，如果没有就执行创建操作
-  const height = uni.getSystemInfoSync().windowHeight;
-  const width = uni.getSystemInfoSync().windowWidth;
-  windowWidth.value = width;
+  const height = windowHeight.value;
   console.log(`width`, width);
   if (!webView) {
     webView = plus.webview.open('', 'barCodeBox', {

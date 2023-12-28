@@ -15,7 +15,6 @@ function onOk() {
   console.log('确定');
   apiDoorUserCtrlDelMySelf()
     .then((res) => {
-      console.log(`res===`, res);
       logout();
     })
     .catch((err) => {
@@ -75,7 +74,7 @@ onMounted(() => {
   </LayoutTabbar>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 page {
   background: #efefef;
 }

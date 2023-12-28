@@ -35,17 +35,20 @@ function baseRequest(
     | 'CONNECT'
     | undefined,
   url: string,
-  data: { isLoading: any }
+  data: { isLoading: any; urlName: any }
 ) {
-  console.log(`url`, url);
   return new Promise((resolve, reject) => {
+    const urlName = JSON.parse(JSON.stringify(data.urlName));
     showLoading(data.isLoading);
     delete data.isLoading;
+    delete data.urlName;
     let responseDate: unknown;
     uni.request({
-      url: apiBaseUrl + url,
+      // url: apiBaseUrl + url,
+      url: `https://zhijia-admin.vimhe.com/admins${url}`,
       method,
       timeout: 20000,
+      // timeout: 100,
       header: {
         'content-type': 'application/json;',
         Authorization: uni.getStorageSync('token')
@@ -56,6 +59,7 @@ function baseRequest(
           if (res.data.code === 200) {
             responseDate = res.data;
             consoleRes(
+              urlName,
               dayjs().format('YYYY-MM-DD HH:mm:ss'),
               url,
               responseDate
@@ -84,7 +88,8 @@ function baseRequest(
           });
         }
       },
-      fail: () => {
+      fail: (res) => {
+        reject(res);
         rejectMessage({
           errno: -1,
           errmsg: '网络不给力，请检查你的网络设置~'
@@ -110,10 +115,15 @@ const http = {
     }) as Http.Response<T>
 };
 
-export function consoleRes(time: string, className: string, res: any) {
+export function consoleRes(
+  urlName: string,
+  time: string,
+  className: string,
+  res: any
+) {
   // setTimeout(() => {
   console.log(
-    `%c${`${className}`} (%c${200}%c)`,
+    `%c${urlName} ${className} (%c${200}%c)`,
     'font-weight:bold',
     'color:#67C23A;font-weight:bold',
     'font-weight:bold',

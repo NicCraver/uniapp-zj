@@ -4,24 +4,39 @@ import dayjs from 'dayjs';
 import { nativeContact } from '@/utils/nativeContact';
 // #endif
 
+const { lockInfo } = useStore('root');
 const formData = reactive({
   name: '',
-  age: '',
   tel: '',
-  address: ''
+  userPws: ''
 });
 
 const ruleForm = ref(null);
 
 const submit = () => {
   ruleForm.value.validate().then(({ valid, errors }) => {
-    if (valid) console.log('success', formData);
-    else console.log('error submit!!', errors);
+    if (valid) {
+      console.log('success', formData);
+      apiAddUser({
+        lockId: lockInfo.value.id,
+        userName: formData.name,
+        phoneNumber: formData.tel,
+        userPws: formData.userPws,
+        userType: 1
+      })
+        .then(() => {
+          uni.showToast({
+            title: '添加成功',
+            icon: 'success'
+          });
+          uni.$emit('updateMemberList');
+          uni.navigateBack({ delta: 1 });
+        })
+        .catch((err) => {
+          console.log(`err====`, err);
+        });
+    } else console.log('error submit!!', errors);
   });
-};
-
-const reset = () => {
-  ruleForm.value.reset();
 };
 
 function openAddressBook() {
@@ -99,6 +114,7 @@ onMounted(() => {});
             v-model="formData.tel"
             class="nut-input-text"
             placeholder="请输入11位手机号码"
+            max-length="11"
             type="text"
           >
             <!-- #ifdef APP -->
@@ -109,7 +125,32 @@ onMounted(() => {});
             <!-- #endif -->
           </nut-input>
         </nut-form-item>
+        <nut-form-item
+          label="设置密码"
+          prop="userPws"
+          required
+          :rules="[
+            { required: true, message: '请填写密码' },
+            {
+              message: '密码需要不少于6位',
+              regex: /^.{6,}$/
+            },
+            {
+              message: '密码需要包含大小写字母及数字',
+              regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/
+            }
+          ]"
+        >
+          <nut-input
+            v-model="formData.userPws"
+            class="nut-input-text"
+            placeholder="请输入密码"
+            type="password"
+          >
+          </nut-input>
+        </nut-form-item>
       </nut-form>
+      <div text="12px #666" pl-10px>密码需要包含大小写字母及数字</div>
       <button
         mt-40px
         w="90%"

@@ -1,5 +1,5 @@
-<script lang="ts" setup>
-const props = defineProps({
+<script setup>
+defineProps({
   // 字体颜色
   color: {
     type: String,
@@ -54,9 +54,8 @@ onMounted(() => {
   uni
     .createSelectorQuery()
     .select('.tui-tabbar')
-    .boundingClientRect(function (rect: any) {
+    .boundingClientRect(function (rect) {
       if (rect) {
-        console.log('==', rect.height); // 元素的高度
         setTableHeight(rect.height);
       }
     })

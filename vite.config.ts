@@ -5,8 +5,8 @@ import PiniaAutoRefs from 'pinia-auto-refs';
 import Unocss from 'unocss/vite';
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
-import { defineConfig } from 'vite';
 import { NutResolver } from 'nutui-uniapp';
+import { defineConfig } from 'vite';
 
 import env from './src/config/env';
 
