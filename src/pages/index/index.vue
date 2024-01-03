@@ -107,6 +107,9 @@ function touchMove(event) {
 }
 
 function touchEnd() {
+  if (showRound.value) {
+    return;
+  }
   // 判断滑动方向
   if (deltaX.value > 50) {
     if (!zoomedOut.value) {
@@ -211,6 +214,7 @@ function init() {
   pageWidth.value = Math.ceil(width / 1.9) - 10;
 
   // console.log(`pageWidth.value`, pageWidth.value);
+  dateList.value = [];
   const weekStartDate = dayjs().startOf('week');
   for (let i = 0; i < 7; i++) {
     const date = weekStartDate.add(i, 'day');
