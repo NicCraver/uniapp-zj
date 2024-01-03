@@ -55,22 +55,33 @@ export default defineStore({
   },
   getters: {},
   actions: {
-    setTableHeight(height) {
-      this.tableHeight = height + 20;
-    },
-    setCurrent() {
-      this.current = 0;
+    setCurrent(index) {
+      this.current = index;
+      uni.hideTabBar({
+        success: () => { },
+        fail: () => { },
+      });
     },
     tabbarSwitch(index, hump, pagePath, verify) {
       if (verify) {
         this.current = index;
-        if (hump) {
-          uni.navigateTo({ url: pagePath });
-        } else {
-          uni.switchTab({
-            url: pagePath
-          });
+        if (index === 0) {
+          uni.$emit('ListenIndex');
         }
+        if (index === 1) {
+          uni.$emit('ListenAdministration');
+        }
+        // if (hump) {
+        //   uni.navigateTo({ url: pagePath });
+        // } else {
+        uni.switchTab({
+          url: pagePath
+        }).then((res) => {
+          console.log(`res`, res)
+        }).catch((err) => {
+          console.log(`err`, err)
+        })
+        // }
       }
     }
   }

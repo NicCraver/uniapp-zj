@@ -1,37 +1,21 @@
-<script setup>
-const listHeight = ref(0);
-onMounted(() => {
-  nextTick(() => {
-    uni
-      .createSelectorQuery()
-      .select('.global-navbar')
-      .boundingClientRect(function (rect) {
-        if (rect) {
-          listHeight.value = useListHeight() - rect.height - 10;
-        }
-      })
-      .exec();
-  });
-});
-</script>
+<script setup></script>
 
 <template>
-  <LayoutDefault title="关于我们" bg="#fff">
+  <LayoutDefault title="关于我们" bg="#fff" :minusHeight="0" :isLine="true">
     <template #left>
-      <Black text="#262727" />
+      <Black color="#262727" />
     </template>
     <div>
-      <div bg="#efefef" h-10px></div>
-      <scroll-view scroll-y :style="{ height: `${listHeight}px` }">
-        <div>关于我们</div>
-        <div v-for="v in 100">1111111</div>
-      </scroll-view>
+      <div>关于我们</div>
+      <div v-for="v in 100" :key="v">1111111</div>
+      <div>2222222222</div>
     </div>
   </LayoutDefault>
 </template>
 
 <style lang="scss">
 page {
+  overflow: hidden;
   height: 100%;
 }
 </style>

@@ -1,27 +1,27 @@
 <script setup>
-// const toastRef = ref();
-// const result = ref('');
-// onLoad((query) => {
-//   result.value = query.result;
-// });
-
-// const state = reactive({
-//   password: ''
-// });
-
-// const submit = () => {
-//   if (!state.password) {
-//     console.log(`state.password`, state.password);
-//   }
-// };
+import dayjs from 'dayjs'
+import { apiDoorUserCtrlAddUserListZ } from "@/api";
+const { lockInfo, userInfo } = useStore("root");
 function goBack() {
-  toastRef.value?.showToast.success('修改成功', {
-    duration: 800
-  });
-  uni.$emit('add', { listData: 1 });
-  uni.navigateBack({
-    delta: 1
-  });
+  apiDoorUserCtrlAddUserListZ({
+    lockid: lockInfo.value.id,
+    userlevel: userInfo.value.userType === "02" ? 1 : 2,
+    starttime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+    endtime: "2199-01-01 00:00:00",
+  })
+    .then((res) => {
+      console.log(`res===`, res);
+
+      toastRef.value?.showToast.success("修改成功", {
+        duration: 800,
+      });
+      uni.navigateBack({
+        delta: 1,
+      });
+    })
+    .catch((err) => {
+      console.log(`err====`, err);
+    });
 }
 </script>
 
@@ -31,7 +31,7 @@ function goBack() {
       <div
         i-material-symbols-arrow-back-ios-new
         text="#000"
-        @click="goBack()"
+        @tap="goBack()"
       ></div>
     </template>
     <div h-10px bg="#EFEFEF"></div>
@@ -47,7 +47,7 @@ function goBack() {
         color="#fff"
         text="16px"
         rounded="20px"
-        @click="goBack"
+        @tap="goBack"
       >
         添加指纹
       </button>

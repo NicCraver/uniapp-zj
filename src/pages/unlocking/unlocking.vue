@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 function goPage() {
   uni.navigateTo({ url: '/pages/remoteLock/remoteLock' });
 }
@@ -11,23 +11,20 @@ function bluetoothUnlocking() {
 </script>
 
 <template>
-  <LayoutDefault title="开锁选择" bg="#fff">
-    <template #left>
-      <Black text="#262727" font-bold />
-    </template>
-    <div bg="#EFEFEF" h-10px></div>
-    <div h="100%" flex flex-col justify-center>
-      <view>
-        <Nbutton @click="bluetoothUnlocking">
+  <LayoutTabbar title="开锁选择" :full="true" >
+    <div bg="#efefef" h-10px></div>
+    <div h="100%" bg="#fff" flex flex-col justify-center>
+      <div>
+        <Nbutton @tap="bluetoothUnlocking">
           <div flex justify-center items-center>
             <image src="/static/images/icon_lanyakaisuo@3x.png" w-20px h-20px />
             <div ml-10px>蓝牙开锁</div>
           </div>
         </Nbutton>
-      </view>
-      <view text="20px #000" py-20px text-center>or</view>
-      <view>
-        <Nbutton bg="#0FBFA4" @click="goPage">
+      </div>
+      <div text="20px #000" py-20px text-center>or</div>
+      <div>
+        <Nbutton bgColor="#0FBFA4" @tap="goPage">
           <div flex justify-center items-center>
             <image
               src="/static/images/icon_yuanchengkaisuo@3x.png"
@@ -37,25 +34,15 @@ function bluetoothUnlocking() {
             <div ml-10px>远程开锁</div>
           </div></Nbutton
         >
-      </view>
-      <!-- <button
-          w="80%"
-          h-40px
-          bg="#0FBFA4"
-          color="#fff"
-          text="16px"
-          rounded="20px"
-          @click="goPage"
-        >
-          远程开锁
-        </button> -->
-      <!-- </div> -->
+      </div>
     </div>
-  </LayoutDefault>
+  </LayoutTabbar>
 </template>
 
 <style lang="scss">
 page {
   height: 100%;
+  overflow: hidden;
+  background: #efefef;
 }
 </style>

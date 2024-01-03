@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 function goPage(params) {
   console.log(`params`, params);
   uni.navigateTo({ url: `/pages/settingPages/${params}` });
@@ -6,18 +6,19 @@ function goPage(params) {
 </script>
 
 <template>
-  <LayoutDefault title="需要帮助">
+  <LayoutDefault title="需要帮助" bg="#efefef" :full="true">
     <template #left>
-      <Black text="#262727" />
+      <Black color="#262727" />
     </template>
-    <div mt-10px>
+    <div bg="#EFEFEF" h="100vh">
+      <div bg="#efefef" h-1px></div>
       <nut-cell-group>
-        <nut-cell is-link @click="goPage('doorLock')">
+        <nut-cell is-link @tap="goPage('doorLock')">
           <template #title>
             <div text="#333">门锁使用说明</div>
           </template>
         </nut-cell>
-        <nut-cell is-link @click="goPage('notice')">
+        <nut-cell is-link @tap="goPage('notice')">
           <template #title>
             <div text="#333">注意事项及常见问题处理</div>
           </template>
@@ -30,5 +31,7 @@ function goPage(params) {
 <style lang="scss">
 page {
   height: 100%;
+  overflow: hidden;
+  background: #efefef;
 }
 </style>

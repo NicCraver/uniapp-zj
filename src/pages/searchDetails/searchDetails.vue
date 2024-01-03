@@ -1,12 +1,33 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs';
+import { getAppSystemInfo } from "@/hooks";
+import dayjs from "dayjs";
+const { userInfo } = useStore("root");
+const { topHeight, windowHeight, safeAreaBottom } = getAppSystemInfo();
+const props = defineProps({
+  background: {
+    type: String,
+    default: "#fff",
+  },
+  full: {
+    type: Boolean,
+    default: false,
+  },
+  isLine: {
+    type: Boolean,
+    default: false,
+  },
+});
+const pageHeight = ref(0);
 const calendarRef = ref<any>(null);
 const state = reactive<any>({
   date: [],
-  endDate: dayjs(dayjs().format('YYYY-MM-DD'))
-    .add(1, 'month')
-    .format('YYYY-MM-DD'),
-  isVisible: false
+  endDate: dayjs(dayjs().format("YYYY-MM-DD"))
+    .add(1, "month")
+    .format("YYYY-MM-DD"),
+  startDate: dayjs(dayjs().format("YYYY-MM-DD"))
+    .subtract(1, "month")
+    .format("YYYY-MM-DD"),
+  isVisible: false,
 });
 const openSwitch = (param) => {
   state[`${param}`] = true;
@@ -15,7 +36,7 @@ const openSwitch = (param) => {
     //   `dayjs().subtract(7, 'day').format('YYYY-MM-DD')`,
     //   dayjs().subtract(14, 'day').format('YYYY-MM-DD')
     // );
-    calendarRef.value.scrollToDate(dayjs().format('YYYY-MM-DD'));
+    calendarRef.value.scrollToDate(dayjs().format("YYYY-MM-DD"));
   });
 };
 const closeSwitch = (param) => {
@@ -27,27 +48,55 @@ const setChooseValue = (param) => {
 };
 
 const disabledDate = (date) => {
-  const start = dayjs().format('YYYY-MM-DD');
-  const end = dayjs().add(2, 'month').format('YYYY-MM-DD');
+  const start = dayjs().format("YYYY-MM-DD");
+  const end = dayjs().add(2, "month").format("YYYY-MM-DD");
   const currentDate = dayjs(date);
   return currentDate.isAfter(start) && currentDate.isBefore(end);
 };
 
 const startTime = computed(() => {
-  return state.date.length > 0 ? state.date[0] : '开始时间';
+  return state.date.length > 0 ? state.date[0] : "开始时间";
 });
 const endTime = computed(() => {
-  return state.date.length > 1 ? state.date[1] : '结束时间';
+  return state.date.length > 1 ? state.date[1] : "结束时间";
 });
-onMounted(() => {});
+onMounted(() => {
+  state.startDate = dayjs(userInfo.value.createTime).format("YYYY-MM-DD");
+  const minusHeight = props.isLine ? -10 : 0;
+  setTimeout(() => {
+    pageHeight.value =
+      windowHeight.value -
+      topHeight.value -
+      safeAreaBottom.value -
+      48 +
+      minusHeight;
+    // console.log(`windowHeight.value`, windowHeight.value);
+    // console.log(`topHeight.value`, topHeight.value);
+    // console.log(`pageHeight.value`, pageHeight.value);
+  }, 0);
+});
 </script>
 
 <template>
-  <LayoutDefault title="开锁记录">
-    <template #left>
-      <Black color="#000" />
-    </template>
+  <div
+    h="100%"
+    style="overflow: hidden"
+    :style="{
+      paddingTop: `${topHeight}px`,
+      background,
+    }"
+  >
+    <div class="global-navbar">
+      <div class="slot-wrapper left">
+        <Black color="#000" />
+      </div>
+      <div class="title">开锁记录</div>
+      <div class="slot-wrapper right">
+        <slot name="right"></slot>
+      </div>
+    </div>
     <div>
+      <div bg="#efefef" h-10px></div>
       <header>
         <div
           my-10px
@@ -55,7 +104,7 @@ onMounted(() => {});
           h-50px
           p-10px
           box-border
-          @click="openSwitch('isVisible')"
+          @tap="openSwitch('isVisible')"
         >
           <div
             h-30px
@@ -74,11 +123,12 @@ onMounted(() => {});
           </div>
         </div>
         <nut-calendar
+          v-if="state.isVisible"
           ref="calendarRef"
           v-model:visible="state.isVisible"
           :default-value="state.date"
           type="range"
-          start-date="2000-01-01"
+          :start-date="state.startDate"
           :end-date="state.endDate"
           :is-auto-back-fill="true"
           :disabled-date="disabledDate"
@@ -87,18 +137,54 @@ onMounted(() => {});
         >
         </nut-calendar>
       </header>
-      <main v-if="state.date.length > 0">
-        <div pl-5px pb-5px text="16px #15A93C">{{ state.date[0] }}</div>
-        <UnlockRecordItem />
-        <UnlockRecordItem />
-      </main>
+      <scroll-view scroll-y :style="{ height: `${pageHeight}px` }" bg="#efefef">
+        <main v-if="state.date.length > 0" bg="#efefef">
+          <div py-10px pl-10px text="16px #333">{{ state.date[0] }}</div>
+          <UnlockRecordItem />
+          <UnlockRecordItem />
+        </main>
+      </scroll-view>
     </div>
-  </LayoutDefault>
+  </div>
 </template>
 
 <style lang="scss">
-:root,
 page {
   height: 100%;
+  overflow: hidden;
+}
+
+.global-navbar {
+  font-size: 18px;
+  color: #000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  // padding-bottom: 10px;
+  // padding-left: 15px;
+  // padding-right: 15px;
+  height: 48px;
+
+  .slot-wrapper {
+    flex: 1;
+    text-align: center;
+  }
+
+  .title {
+    flex: 0 0 auto; /* 不允许title伸缩 */
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .left {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .right {
+    display: flex;
+    justify-content: flex-end;
+  }
 }
 </style>

@@ -1,58 +1,61 @@
 <script lang="ts" setup>
-defineProps({
+import { getAppSystemInfo } from "@/hooks";
+const { topHeight, windowHeight, safeAreaBottom } = getAppSystemInfo();
+const props = defineProps({
   title: String,
   background: {
     type: String,
-    default: '#fff'
+    default: "#fff",
   },
   full: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
+  isLine: {
+    type: Boolean,
+    default: false,
+  },
 });
-
-const { statusBarHeight } = useStore('root');
-const h5Height = ref(0);
-const navbar = ref<any>(null);
-const navbarHeight = ref(0);
-if (isH5()) {
-  h5Height.value = 10;
-}
+const pageHeight = ref(0);
 onMounted(() => {
-  nextTick(() => {
-    uni
-      .createSelectorQuery()
-      .select('.global-navbar')
-      .boundingClientRect(function (rect: any) {
-        if (rect) {
-          navbarHeight.value = rect.height;
-        }
-      })
-      .exec();
-  });
+  const minusHeight = props.isLine ? -10 : 0;
+  setTimeout(() => {
+    pageHeight.value =
+      windowHeight.value -
+      topHeight.value -
+      safeAreaBottom.value -
+      48 +
+      minusHeight;
+    // console.log(`windowHeight.value`, windowHeight.value);
+    // console.log(`topHeight.value`, topHeight.value);
+    // console.log(`pageHeight.value`, pageHeight.value);
+  }, 0);
 });
 </script>
 
 <template>
-  <div h="100%" bg="#EFEFEF" overflow-hidden>
-    <div
-      ref="navbar"
-      class="global-navbar"
-      :style="{
-        paddingTop: `${statusBarHeight + h5Height}px`,
-        background
-      }"
-    >
+  <div
+    h="100%"
+    style="overflow: hidden"
+    :style="{
+      paddingTop: `${topHeight}px`,
+      background,
+    }"
+  >
+    <div class="global-navbar">
       <div class="slot-wrapper left">
         <slot name="left"></slot>
       </div>
-      <span class="title">{{ title }}</span>
+      <div class="title">{{ title }}</div>
       <div class="slot-wrapper right">
         <slot name="right"></slot>
       </div>
     </div>
-    <div v-if="!full" :style="{ height: `calc(100vh - ${navbarHeight}px)` }">
-      <slot />
+    <div v-if="!full">
+      <div bg="#efefef" h-10px v-if="isLine"></div>
+      <scroll-view scroll-y :style="{ height: `${pageHeight}px` }">
+        <slot />
+      </scroll-view>
     </div>
     <div v-else>
       <slot />
@@ -63,6 +66,7 @@ onMounted(() => {
 <style lang="scss">
 page {
   height: 100%;
+  overflow: hidden;
 }
 
 .global-navbar {
@@ -72,9 +76,10 @@ page {
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
-  padding-bottom: 10px;
-  padding-left: 15px;
-  padding-right: 15px;
+  // padding-bottom: 10px;
+  // padding-left: 15px;
+  // padding-right: 15px;
+  height: 48px;
 
   .slot-wrapper {
     flex: 1;

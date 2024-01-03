@@ -56,7 +56,7 @@ export const apiAddLockList = (params: any) =>
 
 export const apiDoorUserLogCtrl = (params: any) =>
   http.get('/doorUserLogCtrl/list', {
-    urlName: '门锁系统日志查询 - apiDoorUserLogCtrl',
+    urlName: '门锁系统日志查询',
     ...params
   });
 
@@ -73,7 +73,6 @@ export const apiAddUser = (params: any) =>
 
 export const apiLockRoleCtrl = (params: any) =>
   http.get('/LockRoleCtrl/list', {
-    // http.get('/DoorUserCtrl/list', {
     urlName: '成员列表查询 - apiLockRoleCtrl',
     ...params
   });
@@ -116,8 +115,35 @@ export const apiLsUserCtrlAddUser = (params: any) =>
     ...params
   });
 
+// 用户编辑 post /DoorUserCtrl/UpdateUser
+export const apiDoorUserCtrlUpdateUser = (params: any) =>
+  http.post('/DoorUserCtrl/UpdateUser', {
+    urlName: '用户编辑',
+    ...params
+  });
+
+// 下发指纹添加指令 post /doorUserCtrl/addUserListZ
+export const apiDoorUserCtrlAddUserListZ = (params: any) =>
+  http.post('/doorUserCtrl/addUserListZ', {
+    urlName: '下发指纹添加指令',
+    ...params
+  });
+
+// 远程打开指定门锁 post /doorCtrl/openDoor
+export const apiDoorCtrlOpenDoor = (params: any) =>
+  http.post('/doorCtrl/openDoor', {
+    urlName: '远程打开指定门锁',
+    ...params
+  });
+// 门锁更新 post /lockListCtrl/updateLockList
+export const apiLockListCtrlUpdateLockList = (params: any) =>
+  http.post('/lockListCtrl/updateLockList', {
+    urlName: '门锁更新',
+   ...params
+  });
+
 export function test1() {
-  apiLsUserCtrlAddUser({})
+  apiLockListCtrlUpdateLockList({})
     .then((res) => {
       console.log(`res===`, res);
     })

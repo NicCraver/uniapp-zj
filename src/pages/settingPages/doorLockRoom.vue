@@ -1,41 +1,60 @@
 <script setup>
-const name = ref('zhijia');
-function goBack() {
-  uni.$emit('doorLockName');
-  uni.navigateBack({
-    delta: 1
-  });
+import { apiLockListCtrlUpdateLockList } from "@/api";
+
+const { lockInfo } = useStore("root");
+// const name = rea("");
+const state = reactive({
+  name: "",
+});
+function save() {
+  if (state.name !== "") {
+    apiLockListCtrlUpdateLockList({
+      id: lockInfo.value.id,
+      hoseid: lockInfo.value.id,
+      locktype: lockInfo.value.locktype,
+      deviceid: lockInfo.value.deviceid,
+      remark: state.name,
+    })
+      .then((res) => {
+        console.log(`res===`, res);
+        uni.showToast({
+          title: "保存成功",
+          icon: "success",
+          mask: true,
+        });
+        uni.$emit("doorLockName", { listData: 1 });
+        uni.navigateBack({
+          delta: 1,
+        });
+      })
+      .catch((err) => {
+        console.log(`err====`, err);
+      });
+  }
 }
+onLoad(() => {
+  state.name = lockInfo.value.remark || lockInfo.value.locktxt;
+});
 </script>
 
 <template>
-  <LayoutDefault title="门锁房间">
+  <LayoutDefault title="门锁房间" :full="true" background="#fefefe">
     <template #left>
-      <div
-        i-material-symbols-arrow-back-ios-new
-        text="#000"
-        @click="goBack()"
-      ></div>
+      <Black color="#262727" />
     </template>
-    <div mt-10px>
-      <nut-input v-model="name" clearable />
-      <button
-        mt-100px
-        w="90%"
-        h-40px
-        bg="#14A83B"
-        color="#fff"
-        text="16px"
-        rounded="20px"
-      >
-        保存
-      </button>
+    <div bg="#EFEFEF" h="100vh">
+      <div h-10px></div>
+      <nut-input v-model="state.name" clearable />
+      <div h-40px></div>
+      <Nbutton @tap="save"> 保存 </Nbutton>
     </div>
   </LayoutDefault>
 </template>
 
 <style lang="scss">
 page {
+  overflow: hidden;
   height: 100%;
+  background: #fefefe;
 }
 </style>

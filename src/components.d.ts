@@ -10,10 +10,10 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Black: typeof import('./components/Black.vue')['default']
-    GlobalNavbar: typeof import('./components/GlobalNavbar.vue')['default']
-    ImgNavbar: typeof import('./components/ImgNavbar.vue')['default']
     LayoutDefault: typeof import('./components/LayoutDefault.vue')['default']
     LayoutTabbar: typeof import('./components/LayoutTabbar.vue')['default']
+    LayoutTabbar2: typeof import('./components/LayoutTabbar2.vue')['default']
+    LayoutTabbarLoading: typeof import('./components/LayoutTabbarLoading.vue')['default']
     Nbutton: typeof import('./components/Nbutton.vue')['default']
     PullList: typeof import('./components/pullList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

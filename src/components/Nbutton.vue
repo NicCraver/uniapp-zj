@@ -13,6 +13,7 @@ defineProps({
 
 <template>
   <button
+  class="nbbutton"
     :style="{ backgroundColor: bgColor }"
     :loading="isLoading"
     w="90%"
@@ -28,7 +29,7 @@ defineProps({
 </template>
 
 <style lang="scss">
-button:hover {
+.nbbutton:hover {
   // 透明度
   opacity: 0.8;
 }

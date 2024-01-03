@@ -1,21 +1,30 @@
 <script setup>
 function login() {
+  console.log(`99`, 99);
   // 跳转到登录页
   uni.navigateTo({
-    url: '/pages/login/login'
+    url: "/pages/login/login",
   });
 }
 function signup() {
+  console.log(`99`, 99);
   // 跳转到登录页
   uni.navigateTo({
-    url: '/pages/signup/signup'
+    url: "/pages/signup/signup",
   });
 }
+onMounted(() => {
+  uni.hideTabBar({
+    success: () => {},
+    fail: () => {},
+  });
+
+});
 </script>
 
 <template>
   <view class="loginOrSignup">
-    <view text="#fff 20px" pb-40px> 智能物联房屋管理 </view>
+    <view text="#fff 20px" pb-40px> 智能物联房屋管理</view>
     <view class="login-sign-bg">
       <view h="100%" flex flex-col justify-center>
         <view>

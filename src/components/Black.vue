@@ -13,8 +13,9 @@ function goBack() {
 <template>
   <div
     i-material-symbols-arrow-back-ios-new
-    :text="color"
-    @click="goBack()"
+    :style="{color: color}"
+    pl-20px
+    @tap="goBack()"
   ></div>
 </template>
 

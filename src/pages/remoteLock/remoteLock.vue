@@ -1,12 +1,23 @@
 <script setup>
+import { apiDoorCtrlOpenDoor } from "@/api";
+const { lockInfo } = useStore("root");
 const unlockingStatus = ref(false);
 function goBack() {
   uni.navigateBack({
-    delta: 1
+    delta: 1,
   });
 }
 function unlocking() {
   if (!unlockingStatus.value) {
+    apiDoorCtrlOpenDoor({
+      id: lockInfo.value.id,
+    })
+      .then((res) => {
+        console.log(`res===`, res);
+      })
+      .catch((err) => {
+        console.log(`err====`, err);
+      });
     console.log(`远程开锁中,调接口`);
   } else {
     console.log(`开锁完成`);
@@ -20,7 +31,7 @@ function unlocking() {
       <div
         i-material-symbols-arrow-back-ios-new
         text="#000"
-        @click="goBack()"
+        @tap="goBack()"
       ></div>
     </template>
     <div h-10px bg="#EFEFEF"></div>
@@ -36,9 +47,9 @@ function unlocking() {
         color="#fff"
         text="16px"
         rounded="20px"
-        @click="unlocking"
+        @tap="unlocking"
       >
-        {{ unlockingStatus ? '开锁完成' : '远程开锁' }}
+        {{ unlockingStatus ? "开锁完成" : "远程开锁" }}
       </button>
     </div>
   </LayoutDefault>

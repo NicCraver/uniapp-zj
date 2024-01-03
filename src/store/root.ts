@@ -41,11 +41,11 @@ export default defineStore({
     setToken(data: any) {
       this.token = data;
     },
-    setSystem(statusBarHeight, windowHeight, platform, windowWidth) {
-      this.statusBarHeight = statusBarHeight;
-      this.windowHeight = windowHeight;
-      this.platform = platform;
-      this.windowWidth = windowWidth;
+    setSystem(systemInfo) {
+      this.statusBarHeight = systemInfo.statusBarHeight;
+      this.windowHeight = systemInfo.windowHeight;
+      this.platform = systemInfo.platform;
+      this.windowWidth = systemInfo.windowWidth;
     }
   }
 });

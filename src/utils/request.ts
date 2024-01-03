@@ -43,12 +43,16 @@ function baseRequest(
     delete data.isLoading;
     delete data.urlName;
     let responseDate: unknown;
+    let tempUrl = '';
+    tempUrl = `https://zhijia-admin.vimhe.com/admins${url}`;
+    // #ifdef H5
+    tempUrl = apiBaseUrl + url;
+    // #endif
+
     uni.request({
-      // url: apiBaseUrl + url,
-      url: `https://zhijia-admin.vimhe.com/admins${url}`,
+      url: tempUrl,
       method,
       timeout: 20000,
-      // timeout: 100,
       header: {
         'content-type': 'application/json;',
         Authorization: uni.getStorageSync('token')
@@ -71,7 +75,7 @@ function baseRequest(
                 errno: res.data.code,
                 errmsg: '令牌失效，请重新登陆'
               });
-              forward('login');
+              uni.redirectTo({ url: '/pages/loginOrSignup/loginOrSignup' });
             } else {
               reject(res.data);
               rejectMessage({
@@ -89,6 +93,7 @@ function baseRequest(
         }
       },
       fail: (res) => {
+        console.log(`res`, res);
         reject(res);
         rejectMessage({
           errno: -1,

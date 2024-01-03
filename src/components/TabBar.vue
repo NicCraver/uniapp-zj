@@ -3,45 +3,45 @@ defineProps({
   // 字体颜色
   color: {
     type: String,
-    default: '#999'
+    default: "#999",
   },
   // 字体选中颜色
   selectedColor: {
     type: String,
-    default: '#14A83B'
+    default: "#14A83B",
   },
   // 背景颜色
   backgroundColor: {
     type: String,
-    default: '#FFFFFF'
+    default: "#FFFFFF",
   },
   // 是否需要中间凸起按钮
   hump: {
     type: Boolean,
-    default: true
+    default: true,
   },
   // 固定在底部
   isFixed: {
     type: Boolean,
-    default: true
+    default: true,
   },
   // 角标字体颜色
   badgeColor: {
     type: String,
-    default: '#fff'
+    default: "#fff",
   },
   // 角标背景颜色
   badgeBgColor: {
     type: String,
-    default: '#F74D54'
+    default: "#F74D54",
   },
   unlined: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
-const { current, tabBar, tabbarSwitch, setTableHeight } = useStore('tabbar');
+const { current, tabBar, tabbarSwitch, setCurrent } = useStore("tabbar");
 onMounted(() => {
   const pages = getCurrentPages(); // 获取栈实例
   const currentRoute = `/${pages[pages.length - 1].route}`; // 获取当前页面路由
@@ -49,17 +49,7 @@ onMounted(() => {
     (item) => item.pagePath === currentRoute
   );
   const temp = tabBar.value.find((item) => item.pagePath === currentRoute);
-  tabbarSwitch(index, temp?.hump, temp?.pagePath, temp?.verify);
-
-  uni
-    .createSelectorQuery()
-    .select('.tui-tabbar')
-    .boundingClientRect(function (rect) {
-      if (rect) {
-        setTableHeight(rect.height);
-      }
-    })
-    .exec();
+  setCurrent(index);
 });
 </script>
 
@@ -116,7 +106,7 @@ onMounted(() => {
 }
 
 .tui-tabbar::before {
-  content: '';
+  content: "";
   width: 100%;
   border-top: 1rpx solid #b2b2b2;
   position: absolute;
@@ -167,10 +157,10 @@ onMounted(() => {
 }
 
 .tui-hump-box::before {
-  content: '';
+  content: "";
   height: 200%;
   width: 200%;
-  border: 1rpx solid #b2b2b2;
+  // border: 1rpx solid #b2b2b2;
   position: absolute;
   top: 0;
   left: 0;

@@ -1,11 +1,107 @@
 import { isFastClick, parseUrl, restoreUrl } from '@/utils/shared';
 import { getUrlType, h5HsqMap, needAuthPath, pagesMap } from '@/utils/urlMap';
+export function useHasToken() {
+  onMounted(() => {
+    const token = uni.getStorageSync("token")
+    if (!token) {
+      uni.showToast({
+        title: "请重新登录",
+        icon: "none",
+      });
+      uni.redirectTo({ url: "/pages/loginOrSignup/loginOrSignup" });
+      // uni.redirectTo({ url: '/pages/login/login' });
+      // uni.redirectTo({ url: '/pages/signup/signup' });
+      // uni.redirectTo({ url: '/pages/forgotPassword/forgotPassword' });
+      // uni.switchTab({ url: '/pages/index/index' });
+    }
+  })
+}
 
-export * from './useRoutingListening';
-export * from './useSystemInfo';
-export * from './useAddLock';
-export * from './useListHeight';
-export * from './useGetUserInfo';
+export function getAppSystemInfo() {
+  const topHeight = ref(0);
+  const textTop = ref(20);
+  const windowHeight = ref(0);
+  const safeAreaBottom = ref(0);
+  // const navigationBarHeight = ref(0);
+  onMounted(async () => {
+    const { setSystem } = useStore("root");
+    const systemInfo: any = await uni.getSystemInfo();
+    setSystem(systemInfo);
+    windowHeight.value = systemInfo.windowHeight;
+    // #ifdef MP-WEIXIN
+    // 获取微信胶囊的位置信息 width,height,top,right,left,bottom
+    // @ts-ignore
+    const custom = wx.getMenuButtonBoundingClientRect()
+    // 导航栏高度(标题栏高度) = 胶囊高度 + (顶部距离 - 状态栏高度) * 2
+    // navigationBarHeight.value = custom.height + systemInfo.statusBarHeight + (custom.top - systemInfo.statusBarHeight) * 2
+    topHeight.value = custom.height + (custom.top - systemInfo.statusBarHeight) * 2
+    // console.log("导航栏高度："+this.globalData.navigationBarHeight)
+
+    // 总体高度 = 状态栏高度 + 导航栏高度
+    // topHeight.value = navigationBarHeight + systemInfo.statusBarHeight
+
+    // #endif
+    // #ifdef APP
+    topHeight.value = systemInfo.statusBarHeight;
+    // #endif
+    // #ifdef H5
+    topHeight.value = systemInfo.statusBarHeight;
+    // #endif
+    safeAreaBottom.value = systemInfo.windowHeight - systemInfo.safeArea.bottom;
+    // console.group('系统参数');
+    console.log(`systemInfo`, systemInfo)
+    console.log("顶部安全区距离：" + topHeight.value);
+    console.log("底部安全区距离：" + safeAreaBottom);
+    // console.groupEnd();
+  })
+
+  return {
+    topHeight,
+    textTop,
+    windowHeight,
+    safeAreaBottom,
+    // navigationBarHeight
+  }
+}
+export function isH5() {
+  return getPlatform() === 'WEB';
+}
+export function isApp() {
+  return getPlatform() === 'APP';
+}
+export function isWx() {
+  return getPlatform() === 'WEIXIN';
+}
+export async function isAndroid() {
+  const systemInfo: any = await uni.getSystemInfo();
+  console.log(`systemInfo`,systemInfo.platform)
+  return systemInfo.platform === 'android';
+}
+
+function getAppPlatform() {
+  // const { platform } = useStore('root');
+  // return platform;
+  return 'android';
+}
+
+function getPlatform() {
+  let platForm = '';
+  // #ifdef APP-PLUS
+  platForm = 'APP';
+  // #endif
+
+  // #ifdef WEB
+  platForm = 'WEB';
+  // #endif
+
+  // #ifdef MP-WEIXIN
+  platForm = 'WEIXIN';
+  // #endif
+
+  return platForm;
+}
+
+
 
 export function onUrlPage(e: any) {
   if (isFastClick()) return;

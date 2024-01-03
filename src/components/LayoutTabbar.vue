@@ -1,43 +1,76 @@
 <script lang="ts" setup>
-defineProps({
-  title: String
+import { getAppSystemInfo } from "@/hooks";
+const { topHeight, windowHeight, safeAreaBottom } = getAppSystemInfo();
+const props = defineProps({
+  title: String,
+  background: {
+    type: String,
+    default: "#fff",
+  },
+  full: {
+    type: Boolean,
+    default: false,
+  },
+  isLine: {
+    type: Boolean,
+    default: false,
+  },
 });
-const { statusBarHeight } = useStore('root');
-const h5Height = ref(0);
-const navbar = ref<any>(null);
-const tabBarRef = ref<any>(null);
-const navbarHeight = ref(0);
+const pageHeight = ref(0);
 onMounted(() => {
-  if (isH5()) {
-    h5Height.value = 10;
-  }
-  nextTick(() => {
-    navbarHeight.value = navbar.value.offsetHeight + 72;
+  uni.hideTabBar({
+    success: () => {},
+    fail: () => {},
   });
+
+  const minusHeight = props.isLine ? -10 : 0;
+  setTimeout(() => {
+    pageHeight.value =
+      windowHeight.value -
+      topHeight.value -
+      safeAreaBottom.value -
+      48 -
+      70 -
+      20 +
+      minusHeight;
+    // console.log(`windowHeight.value`, windowHeight.value);
+    // console.log(`topHeight.value`, topHeight.value);
+    // console.log(`pageHeight.value`, pageHeight.value);
+  }, 0);
 });
 </script>
 
 <template>
-  <div h="100%" bg="#EFEFEF" overflow-hidden>
-    <div
-      ref="navbar"
-      class="global-navbar"
-      :style="{ paddingTop: `${statusBarHeight + h5Height}px` }"
-    >
+  <div
+    h="100%"
+    bg="#EFEFEF"
+    style="overflow: hidden"
+    :style="{
+      paddingTop: `${topHeight}px`,
+      background,
+    }"
+  >
+    <div class="global-navbar">
       <div class="slot-wrapper left">
         <slot name="left"></slot>
       </div>
-      <span class="title">{{ title }}</span>
+      <div class="title">{{ title }}</div>
       <div class="slot-wrapper right">
         <slot name="right"></slot>
       </div>
     </div>
-    <div :style="{ height: `calc(100% - ${navbarHeight}px)` }">
+    <div v-if="!full">
+      <div bg="#efefef" h-10px></div>
+      <scroll-view scroll-y :style="{ height: `${pageHeight}px` }">
+        <slot />
+      </scroll-view>
+    </div>
+    <div v-else :style="{ height: `${pageHeight + 40}px` }" bg="#efefef">
       <slot />
+    </div>
 
-      <footer>
-        <TabBar ref="tabBarRef" />
-      </footer>
+    <div>
+      <TabBar ref="tabBarRef" />
     </div>
   </div>
 </template>
@@ -45,20 +78,17 @@ onMounted(() => {
 <style lang="scss">
 page {
   height: 100%;
+  overflow: hidden;
 }
 
 .global-navbar {
   font-size: 18px;
-  // font-weight: 600;
   color: #000;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #fff;
   box-sizing: border-box;
-  padding-bottom: 10px;
-  padding-left: 15px;
-  padding-right: 15px;
+  height: 48px;
 
   .slot-wrapper {
     flex: 1;
@@ -68,14 +98,17 @@ page {
   .title {
     flex: 0 0 auto; /* 不允许title伸缩 */
     font-size: 18px;
+    font-weight: 600;
   }
 
   .left {
-    text-align: left;
+    display: flex;
+    justify-content: flex-start;
   }
 
   .right {
-    text-align: right;
+    display: flex;
+    justify-content: flex-end;
   }
 }
 </style>
