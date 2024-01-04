@@ -2,15 +2,15 @@ const apiEnv: ApiEnv = 'dev';
 
 const envMap = {
   dev: {
-    baseUrl: '/api/',
-    apiBaseUrl: '/api/'
-  },
-  beta: {
     baseUrl: 'https://zhijia-admin.vimhe.com/admins',
     apiBaseUrl: 'https://zhijia-admin.vimhe.com/admins'
   },
+  beta: {
+    baseUrl: 'http://m.beta.xxx.com',
+    apiBaseUrl: 'https://m.betaapi.xxx.com'
+  },
   prod: {
-    baseUrl: 'https://zhijia-admin.vimhe.com/admins',
+    baseUrl: 'https://m.xxx.com',
     apiBaseUrl: 'https://zhijia-admin.vimhe.com/admins'
   },
   local: {

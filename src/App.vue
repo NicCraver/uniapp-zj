@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useHasToken } from "@/hooks";
 onMounted(() => {
-  // useHasToken();
+  useHasToken();
   uni.hideTabBar({
     success: () => {},
     fail: () => {

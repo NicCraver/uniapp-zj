@@ -40,24 +40,24 @@ onMounted(() => {
   <LayoutTabbar title="我的" :full="true">
     <div bg="#efefef" h-1px></div>
     <nut-cell-group>
-      <nut-cell is-link @click="goPage('changePassword')">
+      <nut-cell is-link @tap="goPage('changePassword')">
         <template #title>
           <div text="#333">修改密码</div>
         </template>
       </nut-cell>
-      <nut-cell is-link @click="goPage('privacyPolicy')">
+      <nut-cell is-link @tap="goPage('privacyPolicy')">
         <template #title>
           <div text="#333">隐私政策</div>
         </template>
       </nut-cell>
-      <nut-cell is-link @click="goPage('aboutUs')">
+      <nut-cell is-link @tap="goPage('aboutUs')">
         <template #title>
           <div text="#333">关于我们</div>
         </template>
       </nut-cell>
       <nut-cell>
         <template #title>
-          <div text="#333" @click="visible1 = true">注销账户</div>
+          <div text="#333" @tap="visible1 = true">注销账户</div>
         </template>
       </nut-cell>
     </nut-cell-group>
@@ -70,7 +70,7 @@ onMounted(() => {
       @ok="onOk"
     />
     <div pt-40px>
-      <Nbutton @click="logout"> 退出登录 </Nbutton>
+      <Nbutton @tap="logout"> 退出登录 </Nbutton>
     </div>
   </LayoutTabbar>
 </template>

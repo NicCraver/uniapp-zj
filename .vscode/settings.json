@@ -9,5 +9,5 @@
   "files.associations": {
     "*.json": "jsonc"
   },
-  "i18n-ally.localesPaths": [],
+  "liveServer.settings.port": 5501,
 }

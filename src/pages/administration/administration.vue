@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { getAppSystemInfo, isAndroid } from "@/hooks";
+import { getAppSystemInfo } from "@/hooks";
 import { apiLockRoleCtrl, apiUserCtrlList } from "@/api";
 const { topHeight, windowHeight, safeAreaBottom } = getAppSystemInfo();
-const { userInfo, lockInfo, platform } = useStore("root");
+const { userInfo, lockInfo } = useStore("root");
 
 const currentTab = ref("members");
 
@@ -86,9 +86,6 @@ function init() {
       if (rect) {
         setTimeout(() => {
           pageTop.value = topHeight.value;
-          if (platform.value === "android") {
-            pageTop.value = topHeight.value + 15;
-          }
           // #ifdef MP-WEIXIN
           pageTop.value = topHeight.value + 8;
           // #endif
@@ -108,8 +105,7 @@ function init() {
   getLockUserCtrlList();
 }
 onMounted(() => {
-  isAndroid();
-  init();
+  init()
   uni.$on("ListenIndex", function () {
     init();
   });

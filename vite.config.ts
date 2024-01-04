@@ -8,8 +8,11 @@ import Components from 'unplugin-vue-components/vite';
 import { defineConfig } from 'vite';
 import { NutResolver } from 'nutui-uniapp';
 
+import env from './src/config/env';
+
 // https://vitejs.dev/config/
 export default defineConfig({
+  base:'./',
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src')
@@ -20,7 +23,6 @@ export default defineConfig({
     PiniaAutoRefs(),
     AutoImport({
       dts: 'src/auto-imports.d.ts',
-      dirs: ['src/hooks', 'src/api'],
       imports: [
         'vue',
         'uni-app',
@@ -45,20 +47,18 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData:
-          "@import '@/static/css/custom_theme.scss';@import 'nutui-uniapp/styles/variables.scss';"
+        additionalData: "@import '@/static/css/custom_theme.scss';@import 'nutui-uniapp/styles/variables.scss';"
       }
     }
   },
   server: {
-    open: true, // 自动打开
-    base: './ ', // 生产环境路径
+    open: true,
+    base: './ ',
     proxy: {
-      // 本地开发环境通过代理实现跨域，生产环境使用 nginx 转发
-      // 正则表达式写法
       '^/api': {
-        target: 'https://zhijia-admin.vimhe.com/admins', // 后端服务实际地址
-        changeOrigin: true, // 开启代理
+        // target: env.apiBaseUrl,
+        target: 'https://zhijia-admin.vimhe.com/admins',
+        changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
       }
     }

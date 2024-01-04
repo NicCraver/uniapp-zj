@@ -3,22 +3,21 @@ function login() {
   console.log(`99`, 99);
   // 跳转到登录页
   uni.navigateTo({
-    url: "/pages/login/login",
+    url: '/pages/login/login'
   });
 }
 function signup() {
   console.log(`99`, 99);
   // 跳转到登录页
   uni.navigateTo({
-    url: "/pages/signup/signup",
+    url: '/pages/signup/signup'
   });
 }
 onMounted(() => {
   uni.hideTabBar({
     success: () => {},
-    fail: () => {},
+    fail: () => {}
   });
-
 });
 </script>
 

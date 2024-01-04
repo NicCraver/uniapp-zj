@@ -72,10 +72,8 @@ export function isApp() {
 export function isWx() {
   return getPlatform() === 'WEIXIN';
 }
-export async function isAndroid() {
-  const systemInfo: any = await uni.getSystemInfo();
-  console.log(`systemInfo`,systemInfo.platform)
-  return systemInfo.platform === 'android';
+export function isAndroid() {
+  return getAppPlatform() === 'android';
 }
 
 function getAppPlatform() {
